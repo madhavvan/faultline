@@ -53,8 +53,8 @@ dev = [
 faultline = "faultline.cli:app"
 
 [project.urls]
-Homepage = "https://github.com/faultline-dev/faultline"
-Repository = "https://github.com/faultline-dev/faultline"
+Homepage = "https://github.com/madhavvan/faultline"
+Repository = "https://github.com/madhavvan/faultline"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/faultline"]

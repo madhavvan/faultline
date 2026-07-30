@@ -1,0 +1,20 @@
+{
+  "name": "Faultline",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+
+  // Everything `faultline demo` needs, plus the dbt/DuckDB extras so the demo
+  // warehouse can be rebuilt from source rather than only replayed.
+  "postCreateCommand": "pip install --upgrade pip && pip install -e '.[dev,demo,agent]'",
+
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python", "charliermarsh.ruff"],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python"
+      }
+    },
+    "codespaces": {
+      "openFiles": ["README.md"]
+    }
+  }
+}

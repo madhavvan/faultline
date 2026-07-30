@@ -30,6 +30,11 @@ pip install -e .
 faultline demo --explain
 ```
 
+Or run it in the browser with nothing installed at all — the container comes up
+with the demo ready:
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/madhavvan/faultline?quickstart=1)
+
 Faultline replays a real dbt/DuckDB warehouse, applies four changes any team would merge on
 a Tuesday, and proves what they did to the production model. Every finding comes with the
 lineage path that substantiates it.
