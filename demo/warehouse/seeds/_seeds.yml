@@ -1,0 +1,72 @@
+version: 2
+
+seeds:
+  - name: raw_orders
+    description: Raw order feed from the commerce platform.
+    config:
+      column_types:
+        order_id: BIGINT
+        customer_id: BIGINT
+        amount: DECIMAL(18,2)
+        status: VARCHAR
+        created_at: TIMESTAMP
+    columns:
+      - name: order_id
+        description: Primary key of the order.
+      - name: customer_id
+        description: Customer who placed the order.
+      - name: amount
+        # FAULT 3 (silent semantic change). The upstream feed switched currency. The column
+        # name, type and value range are unchanged; only this sentence records it. Faultline
+        # compares this against a captured baseline and traces the blast radius.
+        description: "Order gross total in {{ 'USD' if var('clean', false) else 'EUR' }}."
+      - name: status
+        description: One of placed, shipped, cancelled, refunded.
+      - name: created_at
+        description: When the order was placed.
+
+  - name: raw_customers
+    description: Raw customer records from the identity service.
+    config:
+      column_types:
+        customer_id: BIGINT
+        email: VARCHAR
+        phone: VARCHAR
+        country: VARCHAR
+        signup_at: TIMESTAMP
+    columns:
+      - name: customer_id
+        description: Primary key of the customer.
+      - name: email
+        description: Customer email address.
+        meta:
+          faultline_terms: [PII]
+      - name: phone
+        description: Customer phone number.
+        meta:
+          faultline_terms: [PII]
+      - name: country
+        description: ISO country code of the billing address.
+      - name: signup_at
+        description: Account creation timestamp.
+
+  - name: raw_support_tickets
+    description: Raw support ticket feed.
+    config:
+      column_types:
+        ticket_id: BIGINT
+        customer_id: BIGINT
+        opened_at: TIMESTAMP
+        resolved_at: TIMESTAMP
+        satisfaction_score: INTEGER
+    columns:
+      - name: ticket_id
+        description: Primary key of the ticket.
+      - name: customer_id
+        description: Customer who opened the ticket.
+      - name: opened_at
+        description: When the ticket was opened.
+      - name: resolved_at
+        description: When the ticket was resolved.
+      - name: satisfaction_score
+        description: Post-resolution CSAT, 1-5.

@@ -1,0 +1,73 @@
+# Faultline configuration. Every value here is the default — the file is optional, and
+# Faultline works with none of it. Tune it to match how your team actually labels things.
+
+datahub:
+  server: http://localhost:8080
+  # token: read from DATAHUB_GMS_TOKEN when unset
+
+detectors:
+  # How your team marks a model's prediction target. Faultline also honours a
+  # `faultline.label_column` custom property on the MLModel itself.
+  label_term: "urn:li:glossaryTerm:Label"
+  label_property: "faultline.label_column"
+
+  # What counts as restricted for the compliance detector.
+  restricted_terms:
+    - "urn:li:glossaryTerm:PII"
+    - "urn:li:glossaryTerm:PHI"
+    - "urn:li:glossaryTerm:Sensitive"
+    - "urn:li:glossaryTerm:Confidential"
+  restricted_tags:
+    - "urn:li:tag:PII"
+    - "urn:li:tag:Sensitive"
+
+  # How a feature declares which serving path it belongs to. Falls back to tags and to the
+  # feature table's name, which is how most feature stores end up labelling this anyway.
+  serving_property: "faultline.serving"
+  offline_markers: [offline, batch, training]
+  online_markers: [online, realtime, serving]
+
+  # Traversal bounds — deep enough for a real warehouse, bounded enough for CI.
+  max_depth: 16
+  max_paths_per_finding: 4
+
+  # A finding whose evidence rests only on dataset-level bridging cannot be substantiated at
+  # column level, so it is capped below blocking severity rather than paging anyone.
+  low_confidence_threshold: 0.5
+  low_confidence_max_severity: MEDIUM
+
+  # enabled: []   # empty means all
+  # disabled: []
+
+writeback:
+  enabled: true
+  dry_run: false
+  tag_prefix: Faultline
+  structured_property_namespace: io.faultline
+  write_tags: true
+  write_structured_properties: true
+  write_incidents: true
+  write_documents: true
+  write_run_audit: true
+
+ci:
+  fail_on: HIGH
+  # Gate only on findings absent from the baseline, so existing debt doesn't block the next
+  # PR while still being visible in the report.
+  fail_on_new_only: true
+  baseline_path: .faultline-baseline.json
+  post_pr_comment: true
+
+agent:
+  enabled: true
+  model: claude-opus-5
+  effort: high
+  max_tokens: 16000
+  # The agent reads DataHub through its official MCP server.
+  mcp_command: uvx
+  mcp_args: ["mcp-server-datahub"]
+  # Set true to fail rather than degrade when the MCP server is unreachable.
+  require_mcp: false
+
+# Restrict a scan to particular models. Empty means all.
+model_filter: []

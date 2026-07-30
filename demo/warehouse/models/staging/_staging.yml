@@ -1,0 +1,46 @@
+version: 2
+
+models:
+  - name: stg_orders
+    description: Normalised orders, one row per order.
+    columns:
+      - name: order_id
+        description: Primary key of the order.
+      - name: customer_id
+        description: Customer who placed the order.
+      - name: amount_usd
+        description: "Order total in the reporting currency, converted from {{ 'USD' if var('clean', false) else 'EUR' }}."
+      - name: is_completed
+        description: True when the order reached shipped status.
+      - name: order_date
+        description: Date the order was placed.
+
+  - name: stg_customers
+    description: Customer dimension with the address hashed.
+    columns:
+      - name: customer_id
+        description: Primary key of the customer.
+      - name: email_hash
+        description: MD5 of the customer email.
+        meta:
+          faultline_terms: [PII]
+      - name: email_domain
+        description: Domain part of the customer email, retained for account segmentation.
+        meta:
+          faultline_terms: [PII]
+      - name: country
+        description: ISO country code.
+      - name: tenure_days
+        description: Days since signup.
+
+  - name: stg_tickets
+    description: Support tickets with resolution time computed.
+    columns:
+      - name: ticket_id
+        description: Primary key of the ticket.
+      - name: customer_id
+        description: Customer who opened the ticket.
+      - name: resolution_hours
+        description: Hours between opened_at and resolved_at.
+      - name: satisfaction_score
+        description: Post-resolution CSAT, 1-5.

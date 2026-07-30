@@ -1,0 +1,348 @@
+{
+  "findings": [
+    {
+      "kind": "SILENT_SEMANTIC_CHANGE",
+      "severity": "CRITICAL",
+      "title": "`warehouse.main_raw.raw_orders.amount` changed (currency change) beneath `churn_propensity_v7`",
+      "summary": "The documented currency changed from `usd` to `eur`. Values in this column now mean something different while remaining numerically plausible. Model `churn_propensity_v7` depends on this column through 5 lineage hop(s). The pipeline did not fail and the values remain plausible, so nothing else will flag this.",
+      "model_urn": "urn:li:mlModel:(urn:li:dataPlatform:mlflow,churn_propensity_v7,PROD)",
+      "feature_urn": null,
+      "dataset_urn": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD)",
+      "column_urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD),amount)",
+      "proofs": [
+        {
+          "hops": [
+            {
+              "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD),amount)",
+              "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),amount_usd)",
+              "edge": "COLUMN_LINEAGE",
+              "transform": "ROUND(amount * 1.0, 2)",
+              "confidence": 1.0,
+              "query": null
+            },
+            {
+              "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),amount_usd)",
+              "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),avg_order_value_30d)",
+              "edge": "COLUMN_LINEAGE",
+              "transform": "AVG(CASE WHEN order_date >= CAST('2026-07-01' AS DATE) - 30 THEN amount_usd END)",
+              "confidence": 1.0,
+              "query": null
+            },
+            {
+              "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),avg_order_value_30d)",
+              "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD),avg_order_value_30d)",
+              "edge": "COLUMN_LINEAGE",
+              "transform": "identity",
+              "confidence": 1.0,
+              "query": null
+            },
+            {
+              "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD),avg_order_value_30d)",
+              "downstream": "urn:li:mlFeature:(customer_features_offline,avg_order_value_30d)",
+              "edge": "FEATURE_SOURCE",
+              "transform": "feature materialisation (name_match)",
+              "confidence": 0.9,
+              "query": null
+            },
+            {
+              "upstream": "urn:li:mlFeature:(customer_features_offline,avg_order_value_30d)",
+              "downstream": "urn:li:mlModel:(urn:li:dataPlatform:mlflow,churn_propensity_v7,PROD)",
+              "edge": "MODEL_FEATURE",
+              "transform": "model input",
+              "confidence": 1.0,
+              "query": null
+            }
+          ]
+        }
+      ],
+      "evidence": {
+        "change_kind": "currency change",
+        "before": {
+          "native_type": "DECIMAL(18,2)",
+          "description": "Order gross total in USD.",
+          "nullable": true,
+          "terms": [],
+          "tags": []
+        },
+        "after": {
+          "native_type": "DECIMAL(18,2)",
+          "description": "Order gross total in EUR.",
+          "nullable": true,
+          "terms": [],
+          "tags": []
+        },
+        "baseline_captured_at": "2026-07-27T17:48:58.673911+00:00",
+        "model_deployed": true
+      },
+      "remediation": "Confirm whether `churn_propensity_v7` was retrained after this change. If not, its training distribution no longer matches its inputs -- retrain, or revert the upstream change.",
+      "narrative": null,
+      "detected_at": "2026-07-27T17:50:15.859065+00:00"
+    },
+    {
+      "kind": "TARGET_LEAKAGE",
+      "severity": "CRITICAL",
+      "title": "Feature `customer_features_offline.segment_churn_rate` derives from label `warehouse.main_marts.customer_360.churned` (3 hops)",
+      "summary": "There is a lineage path from the prediction target `warehouse.main_marts.customer_360.churned` to `customer_features_offline.segment_churn_rate`, a feature of model `churn_propensity_v7`. The feature encodes the answer, so offline accuracy is inflated and will not survive contact with production data, where the label is not yet known.",
+      "model_urn": "urn:li:mlModel:(urn:li:dataPlatform:mlflow,churn_propensity_v7,PROD)",
+      "feature_urn": "urn:li:mlFeature:(customer_features_offline,segment_churn_rate)",
+      "dataset_urn": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD)",
+      "column_urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),churned)",
+      "proofs": [
+        {
+          "hops": [
+            {
+              "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),churned)",
+              "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_risk,PROD),segment_churn_rate)",
+              "edge": "COLUMN_LINEAGE",
+              "transform": "AVG(CASE WHEN churned THEN 1.0 ELSE 0.0 END) OVER (PARTITION BY country)",
+              "confidence": 1.0,
+              "query": null
+            },
+            {
+              "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_risk,PROD),segment_churn_rate)",
+              "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD),segment_churn_rate)",
+              "edge": "COLUMN_LINEAGE",
+              "transform": "identity",
+              "confidence": 1.0,
+              "query": null
+            },
+            {
+              "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD),segment_churn_rate)",
+              "downstream": "urn:li:mlFeature:(customer_features_offline,segment_churn_rate)",
+              "edge": "FEATURE_SOURCE",
+              "transform": "feature materialisation (name_match)",
+              "confidence": 0.9,
+              "query": null
+            }
+          ]
+        }
+      ],
+      "evidence": {
+        "label_identified_by": "declared",
+        "relationship": "feature_derives_from_label",
+        "hops": 3,
+        "transforms": [
+          "AVG(CASE WHEN churned THEN 1.0 ELSE 0.0 END) OVER (PARTITION BY country)",
+          "identity",
+          "feature materialisation (name_match)"
+        ],
+        "path_count": 1,
+        "model_deployed": true,
+        "bridge_method": "name_match"
+      },
+      "remediation": "Break the dependency: recompute `customer_features_offline.segment_churn_rate` from inputs that exclude `warehouse.main_marts.customer_360.churned`, or drop the feature. Re-evaluate the model afterwards -- the current metrics are not a measurement of predictive skill.",
+      "narrative": null,
+      "detected_at": "2026-07-27T17:50:15.860079+00:00"
+    },
+    {
+      "kind": "COMPLIANCE_PROPAGATION",
+      "severity": "HIGH",
+      "title": "PII column reaches `churn_propensity_v7`",
+      "summary": "Column `warehouse.main_raw.raw_customers.email` is classified PII and flows into model `churn_propensity_v7`, which is served at churn-propensity-prod. Neither the model nor its features carry that classification, so the restriction is not visible to anyone reviewing them.",
+      "model_urn": "urn:li:mlModel:(urn:li:dataPlatform:mlflow,churn_propensity_v7,PROD)",
+      "feature_urn": null,
+      "dataset_urn": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_customers,PROD)",
+      "column_urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_customers,PROD),email)",
+      "proofs": [
+        {
+          "hops": [
+            {
+              "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_customers,PROD),email)",
+              "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),email_domain)",
+              "edge": "COLUMN_LINEAGE",
+              "transform": "SPLIT_PART(email, '@', 2)",
+              "confidence": 1.0,
+              "query": null
+            },
+            {
+              "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),email_domain)",
+              "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),email_domain)",
+              "edge": "COLUMN_LINEAGE",
+              "transform": "identity",
+              "confidence": 1.0,
+              "query": null
+            },
+            {
+              "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),email_domain)",
+              "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD),email_domain)",
+              "edge": "COLUMN_LINEAGE",
+              "transform": "identity",
+              "confidence": 1.0,
+              "query": null
+            },
+            {
+              "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD),email_domain)",
+              "downstream": "urn:li:mlFeature:(customer_features_offline,email_domain)",
+              "edge": "FEATURE_SOURCE",
+              "transform": "feature materialisation (name_match)",
+              "confidence": 0.9,
+              "query": null
+            },
+            {
+              "upstream": "urn:li:mlFeature:(customer_features_offline,email_domain)",
+              "downstream": "urn:li:mlModel:(urn:li:dataPlatform:mlflow,churn_propensity_v7,PROD)",
+              "edge": "MODEL_FEATURE",
+              "transform": "model input",
+              "confidence": 1.0,
+              "query": null
+            }
+          ]
+        }
+      ],
+      "evidence": {
+        "classifications": [
+          "urn:li:glossaryTerm:PII"
+        ],
+        "hops": 5,
+        "deployments": [
+          "urn:li:mlModelDeployment:(urn:li:dataPlatform:sagemaker,churn-propensity-prod,PROD)"
+        ],
+        "model_deployed": true,
+        "model_existing_terms": [],
+        "model_existing_tags": []
+      },
+      "remediation": "Either propagate PII onto the intermediate features and `churn_propensity_v7` so the restriction travels with the data, or remove the column from the model's lineage. Faultline can apply the propagation for you with `--write-back`.",
+      "narrative": null,
+      "detected_at": "2026-07-27T17:50:15.859065+00:00"
+    },
+    {
+      "kind": "TRAIN_SERVE_SKEW",
+      "severity": "HIGH",
+      "title": "Offline and online `avg_order_value_30d` are computed differently",
+      "summary": "Feature `avg_order_value_30d` is derived one way for training and another way for serving. The paths agree for 1 hop(s) from `warehouse.main_raw.raw_orders.amount`, then split: the offline path applies `AVG(CASE WHEN order_date >= CAST('2026-07-01' AS DATE) - 30 THEN amount_usd END)` while the online path applies `AVG(CASE WHEN order_date >= CAST('2026-07-01' AS DATE) - 7 THEN amount_usd END)`. The model was trained on one definition and is scored against the other, so every live prediction is made on inputs the model never saw during training.",
+      "model_urn": "urn:li:mlModel:(urn:li:dataPlatform:mlflow,churn_propensity_v7,PROD)",
+      "feature_urn": "urn:li:mlFeature:(customer_features_offline,avg_order_value_30d)",
+      "dataset_urn": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD)",
+      "column_urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD),amount)",
+      "proofs": [
+        {
+          "hops": [
+            {
+              "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD),amount)",
+              "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),amount_usd)",
+              "edge": "COLUMN_LINEAGE",
+              "transform": "ROUND(amount * 1.0, 2)",
+              "confidence": 1.0,
+              "query": null
+            },
+            {
+              "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),amount_usd)",
+              "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD),avg_order_value_30d)",
+              "edge": "COLUMN_LINEAGE",
+              "transform": "AVG(CASE WHEN order_date >= CAST('2026-07-01' AS DATE) - 7 THEN amount_usd END)",
+              "confidence": 1.0,
+              "query": null
+            },
+            {
+              "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD),avg_order_value_30d)",
+              "downstream": "urn:li:mlFeature:(customer_features_online,avg_order_value_30d)",
+              "edge": "FEATURE_SOURCE",
+              "transform": "feature materialisation (name_match)",
+              "confidence": 0.9,
+              "query": null
+            }
+          ]
+        },
+        {
+          "hops": [
+            {
+              "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD),amount)",
+              "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),amount_usd)",
+              "edge": "COLUMN_LINEAGE",
+              "transform": "ROUND(amount * 1.0, 2)",
+              "confidence": 1.0,
+              "query": null
+            },
+            {
+              "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),amount_usd)",
+              "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),avg_order_value_30d)",
+              "edge": "COLUMN_LINEAGE",
+              "transform": "AVG(CASE WHEN order_date >= CAST('2026-07-01' AS DATE) - 30 THEN amount_usd END)",
+              "confidence": 1.0,
+              "query": null
+            },
+            {
+              "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),avg_order_value_30d)",
+              "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD),avg_order_value_30d)",
+              "edge": "COLUMN_LINEAGE",
+              "transform": "identity",
+              "confidence": 1.0,
+              "query": null
+            },
+            {
+              "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD),avg_order_value_30d)",
+              "downstream": "urn:li:mlFeature:(customer_features_offline,avg_order_value_30d)",
+              "edge": "FEATURE_SOURCE",
+              "transform": "feature materialisation (name_match)",
+              "confidence": 0.9,
+              "query": null
+            }
+          ]
+        }
+      ],
+      "evidence": {
+        "logical_feature": "avg_order_value_30d",
+        "offline_feature": "urn:li:mlFeature:(customer_features_offline,avg_order_value_30d)",
+        "online_feature": "urn:li:mlFeature:(customer_features_online,avg_order_value_30d)",
+        "shared_root": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD),amount)",
+        "offline_signature": "COLUMN_LINEAGE:ROUND(amount * 1.0, 2)|COLUMN_LINEAGE:AVG(CASE WHEN order_date >= CAST('2026-07-01' AS DATE) - 30 THEN amount_usd END)|FEATURE_SOURCE",
+        "online_signature": "COLUMN_LINEAGE:ROUND(amount * 1.0, 2)|COLUMN_LINEAGE:AVG(CASE WHEN order_date >= CAST('2026-07-01' AS DATE) - 7 THEN amount_usd END)|FEATURE_SOURCE",
+        "model_deployed": true,
+        "fork_after_hops": 1,
+        "offline_transform": "AVG(CASE WHEN order_date >= CAST('2026-07-01' AS DATE) - 30 THEN amount_usd END)",
+        "online_transform": "AVG(CASE WHEN order_date >= CAST('2026-07-01' AS DATE) - 7 THEN amount_usd END)",
+        "offline_next_node": "warehouse.main_marts.customer_360.avg_order_value_30d",
+        "online_next_node": "warehouse.main_features.customer_features_online.avg_order_value_30d"
+      },
+      "remediation": "Reconcile the two definitions of `avg_order_value_30d` at the fork point, then backfill or retrain. Longer term, compute the feature once and materialise both stores from that single definition so the paths cannot drift again.",
+      "narrative": null,
+      "detected_at": "2026-07-27T17:50:15.860079+00:00"
+    }
+  ],
+  "scanned_models": [
+    "urn:li:mlModel:(urn:li:dataPlatform:mlflow,churn_propensity_v7,PROD)"
+  ],
+  "scanned_features": [
+    "urn:li:mlFeature:(customer_features_offline,avg_order_value_30d)",
+    "urn:li:mlFeature:(customer_features_offline,avg_resolution_hours)",
+    "urn:li:mlFeature:(customer_features_offline,email_domain)",
+    "urn:li:mlFeature:(customer_features_offline,order_count_90d)",
+    "urn:li:mlFeature:(customer_features_offline,segment_churn_rate)",
+    "urn:li:mlFeature:(customer_features_online,avg_order_value_30d)",
+    "urn:li:mlFeature:(customer_features_online,avg_resolution_hours)",
+    "urn:li:mlFeature:(customer_features_online,email_domain)",
+    "urn:li:mlFeature:(customer_features_online,order_count_90d)"
+  ],
+  "detectors_run": [
+    "compliance-propagation",
+    "silent-semantic-change",
+    "target-leakage",
+    "train-serve-skew"
+  ],
+  "started_at": "2026-07-27T17:50:15.858064+00:00",
+  "finished_at": "2026-07-27T17:50:15.861079+00:00",
+  "graph_source": "replay:demo-graph.json",
+  "stats": {
+    "graph": {
+      "entities": 23,
+      "column_edges": 43,
+      "dataset_edges": 12,
+      "DATASET": 10,
+      "ML_FEATURE": 9,
+      "ML_FEATURE_TABLE": 2,
+      "ML_MODEL": 1,
+      "ML_MODEL_DEPLOYMENT": 1,
+      "synthesised_ml_edges": 24
+    },
+    "graph_origin": "dbt:faultline_demo",
+    "per_detector": {
+      "compliance-propagation": 4,
+      "silent-semantic-change": 2,
+      "target-leakage": 1,
+      "train-serve-skew": 1
+    },
+    "duplicates_removed": 0,
+    "cascades_collapsed": 4,
+    "unsubstantiated_rejected": 0
+  }
+}

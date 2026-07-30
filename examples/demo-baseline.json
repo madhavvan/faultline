@@ -1,0 +1,412 @@
+{
+  "columns": {
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD),customer_id)": {
+      "signature": "BIGINT␟BIGINT␟null␟entity key.␟␟",
+      "native_type": "BIGINT",
+      "description": "Entity key.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD),avg_order_value_30d)": {
+      "signature": "DOUBLE␟DOUBLE␟null␟mean order value over the trailing 30 days.␟␟",
+      "native_type": "DOUBLE",
+      "description": "Mean order value over the trailing 30 days.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD),order_count_90d)": {
+      "signature": "BIGINT␟BIGINT␟null␟completed orders over the trailing 90 days.␟␟",
+      "native_type": "BIGINT",
+      "description": "Completed orders over the trailing 90 days.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD),avg_resolution_hours)": {
+      "signature": "DOUBLE␟DOUBLE␟null␟mean support resolution time.␟␟",
+      "native_type": "DOUBLE",
+      "description": "Mean support resolution time.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD),customer_id)": {
+      "signature": "BIGINT␟BIGINT␟null␟entity key.␟␟",
+      "native_type": "BIGINT",
+      "description": "Entity key.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD),avg_order_value_30d)": {
+      "signature": "DOUBLE␟DOUBLE␟null␟mean order value over the trailing 30 days.␟␟",
+      "native_type": "DOUBLE",
+      "description": "Mean order value over the trailing 30 days.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD),order_count_90d)": {
+      "signature": "BIGINT␟BIGINT␟null␟completed orders over the trailing 90 days.␟␟",
+      "native_type": "BIGINT",
+      "description": "Completed orders over the trailing 90 days.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD),avg_resolution_hours)": {
+      "signature": "DOUBLE␟DOUBLE␟null␟mean support resolution time.␟␟",
+      "native_type": "DOUBLE",
+      "description": "Mean support resolution time.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),customer_id)": {
+      "signature": "BIGINT␟BIGINT␟null␟primary key of the customer.␟␟",
+      "native_type": "BIGINT",
+      "description": "Primary key of the customer.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),email_hash)": {
+      "signature": "VARCHAR␟VARCHAR␟null␟md5 of the customer email.␟urn:li:glossaryTerm:PII␟",
+      "native_type": "VARCHAR",
+      "description": "MD5 of the customer email.",
+      "nullable": true,
+      "terms": [
+        "urn:li:glossaryTerm:PII"
+      ],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),email_domain)": {
+      "signature": "VARCHAR␟VARCHAR␟null␟domain part of the customer email.␟urn:li:glossaryTerm:PII␟",
+      "native_type": "VARCHAR",
+      "description": "Domain part of the customer email.",
+      "nullable": true,
+      "terms": [
+        "urn:li:glossaryTerm:PII"
+      ],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),country)": {
+      "signature": "VARCHAR␟VARCHAR␟null␟iso country code.␟␟",
+      "native_type": "VARCHAR",
+      "description": "ISO country code.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),tenure_days)": {
+      "signature": "BIGINT␟BIGINT␟null␟days since signup.␟␟",
+      "native_type": "BIGINT",
+      "description": "Days since signup.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),avg_order_value_30d)": {
+      "signature": "DOUBLE␟DOUBLE␟null␟mean order value over the trailing 30 days.␟␟",
+      "native_type": "DOUBLE",
+      "description": "Mean order value over the trailing 30 days.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),order_count_90d)": {
+      "signature": "BIGINT␟BIGINT␟null␟completed orders over the trailing 90 days.␟␟",
+      "native_type": "BIGINT",
+      "description": "Completed orders over the trailing 90 days.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),avg_resolution_hours)": {
+      "signature": "DOUBLE␟DOUBLE␟null␟mean support resolution time.␟␟",
+      "native_type": "DOUBLE",
+      "description": "Mean support resolution time.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),churned)": {
+      "signature": "BOOLEAN␟BOOLEAN␟null␟target: no completed order in the last 90 days.␟urn:li:glossaryTerm:Label␟",
+      "native_type": "BOOLEAN",
+      "description": "TARGET: no completed order in the last 90 days.",
+      "nullable": true,
+      "terms": [
+        "urn:li:glossaryTerm:Label"
+      ],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_risk,PROD),customer_id)": {
+      "signature": "BIGINT␟BIGINT␟null␟primary key of the customer.␟␟",
+      "native_type": "BIGINT",
+      "description": "Primary key of the customer.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_risk,PROD),country)": {
+      "signature": "VARCHAR␟VARCHAR␟null␟segment key.␟␟",
+      "native_type": "VARCHAR",
+      "description": "Segment key.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_risk,PROD),segment_churn_rate)": {
+      "signature": "DOUBLE␟DOUBLE␟null␟observed churn rate within the customer's country segment.␟␟",
+      "native_type": "DOUBLE",
+      "description": "Observed churn rate within the customer's country segment.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),customer_id)": {
+      "signature": "BIGINT␟BIGINT␟null␟primary key of the customer.␟␟",
+      "native_type": "BIGINT",
+      "description": "Primary key of the customer.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),email_hash)": {
+      "signature": "VARCHAR␟VARCHAR␟null␟md5 of the customer email.␟urn:li:glossaryTerm:PII␟",
+      "native_type": "VARCHAR",
+      "description": "MD5 of the customer email.",
+      "nullable": true,
+      "terms": [
+        "urn:li:glossaryTerm:PII"
+      ],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),email_domain)": {
+      "signature": "VARCHAR␟VARCHAR␟null␟domain part of the customer email, retained for account segmentation.␟urn:li:glossaryTerm:PII␟",
+      "native_type": "VARCHAR",
+      "description": "Domain part of the customer email, retained for account segmentation.",
+      "nullable": true,
+      "terms": [
+        "urn:li:glossaryTerm:PII"
+      ],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),country)": {
+      "signature": "VARCHAR␟VARCHAR␟null␟iso country code.␟␟",
+      "native_type": "VARCHAR",
+      "description": "ISO country code.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),tenure_days)": {
+      "signature": "BIGINT␟BIGINT␟null␟days since signup.␟␟",
+      "native_type": "BIGINT",
+      "description": "Days since signup.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),order_id)": {
+      "signature": "BIGINT␟BIGINT␟null␟primary key of the order.␟␟",
+      "native_type": "BIGINT",
+      "description": "Primary key of the order.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),customer_id)": {
+      "signature": "BIGINT␟BIGINT␟null␟customer who placed the order.␟␟",
+      "native_type": "BIGINT",
+      "description": "Customer who placed the order.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),amount_usd)": {
+      "signature": "DECIMAL(18,2)␟DECIMAL␟null␟order total in the reporting currency, converted from usd.␟␟",
+      "native_type": "DECIMAL(18,2)",
+      "description": "Order total in the reporting currency, converted from USD.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),is_completed)": {
+      "signature": "BOOLEAN␟BOOLEAN␟null␟true when the order reached shipped status.␟␟",
+      "native_type": "BOOLEAN",
+      "description": "True when the order reached shipped status.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),order_date)": {
+      "signature": "DATE␟DATE␟null␟date the order was placed.␟␟",
+      "native_type": "DATE",
+      "description": "Date the order was placed.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_tickets,PROD),ticket_id)": {
+      "signature": "BIGINT␟BIGINT␟null␟primary key of the ticket.␟␟",
+      "native_type": "BIGINT",
+      "description": "Primary key of the ticket.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_tickets,PROD),customer_id)": {
+      "signature": "BIGINT␟BIGINT␟null␟customer who opened the ticket.␟␟",
+      "native_type": "BIGINT",
+      "description": "Customer who opened the ticket.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_tickets,PROD),resolution_hours)": {
+      "signature": "BIGINT␟BIGINT␟null␟hours between opened_at and resolved_at.␟␟",
+      "native_type": "BIGINT",
+      "description": "Hours between opened_at and resolved_at.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_tickets,PROD),satisfaction_score)": {
+      "signature": "INTEGER␟INTEGER␟null␟post-resolution csat, 1-5.␟␟",
+      "native_type": "INTEGER",
+      "description": "Post-resolution CSAT, 1-5.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_customers,PROD),customer_id)": {
+      "signature": "BIGINT␟BIGINT␟null␟primary key of the customer.␟␟",
+      "native_type": "BIGINT",
+      "description": "Primary key of the customer.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_customers,PROD),email)": {
+      "signature": "VARCHAR␟VARCHAR␟null␟customer email address.␟urn:li:glossaryTerm:PII␟",
+      "native_type": "VARCHAR",
+      "description": "Customer email address.",
+      "nullable": true,
+      "terms": [
+        "urn:li:glossaryTerm:PII"
+      ],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_customers,PROD),phone)": {
+      "signature": "VARCHAR␟VARCHAR␟null␟customer phone number.␟urn:li:glossaryTerm:PII␟",
+      "native_type": "VARCHAR",
+      "description": "Customer phone number.",
+      "nullable": true,
+      "terms": [
+        "urn:li:glossaryTerm:PII"
+      ],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_customers,PROD),country)": {
+      "signature": "VARCHAR␟VARCHAR␟null␟iso country code of the billing address.␟␟",
+      "native_type": "VARCHAR",
+      "description": "ISO country code of the billing address.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_customers,PROD),signup_at)": {
+      "signature": "TIMESTAMP␟TIMESTAMP␟null␟account creation timestamp.␟␟",
+      "native_type": "TIMESTAMP",
+      "description": "Account creation timestamp.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD),order_id)": {
+      "signature": "BIGINT␟BIGINT␟null␟primary key of the order.␟␟",
+      "native_type": "BIGINT",
+      "description": "Primary key of the order.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD),customer_id)": {
+      "signature": "BIGINT␟BIGINT␟null␟customer who placed the order.␟␟",
+      "native_type": "BIGINT",
+      "description": "Customer who placed the order.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD),amount)": {
+      "signature": "DECIMAL(18,2)␟DECIMAL␟null␟order gross total in usd.␟␟",
+      "native_type": "DECIMAL(18,2)",
+      "description": "Order gross total in USD.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD),status)": {
+      "signature": "VARCHAR␟VARCHAR␟null␟one of placed, shipped, cancelled, refunded.␟␟",
+      "native_type": "VARCHAR",
+      "description": "One of placed, shipped, cancelled, refunded.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD),created_at)": {
+      "signature": "TIMESTAMP␟TIMESTAMP␟null␟when the order was placed.␟␟",
+      "native_type": "TIMESTAMP",
+      "description": "When the order was placed.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_support_tickets,PROD),ticket_id)": {
+      "signature": "BIGINT␟BIGINT␟null␟primary key of the ticket.␟␟",
+      "native_type": "BIGINT",
+      "description": "Primary key of the ticket.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_support_tickets,PROD),customer_id)": {
+      "signature": "BIGINT␟BIGINT␟null␟customer who opened the ticket.␟␟",
+      "native_type": "BIGINT",
+      "description": "Customer who opened the ticket.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_support_tickets,PROD),opened_at)": {
+      "signature": "TIMESTAMP␟TIMESTAMP␟null␟when the ticket was opened.␟␟",
+      "native_type": "TIMESTAMP",
+      "description": "When the ticket was opened.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_support_tickets,PROD),resolved_at)": {
+      "signature": "TIMESTAMP␟TIMESTAMP␟null␟when the ticket was resolved.␟␟",
+      "native_type": "TIMESTAMP",
+      "description": "When the ticket was resolved.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    },
+    "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_support_tickets,PROD),satisfaction_score)": {
+      "signature": "INTEGER␟INTEGER␟null␟post-resolution csat, 1-5.␟␟",
+      "native_type": "INTEGER",
+      "description": "Post-resolution CSAT, 1-5.",
+      "nullable": true,
+      "terms": [],
+      "tags": []
+    }
+  },
+  "captured_at": "2026-07-27T17:48:58.673911+00:00",
+  "datahub_server": null
+}

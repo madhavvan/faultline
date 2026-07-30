@@ -1,0 +1,36 @@
+version: 2
+
+models:
+  - name: customer_features_offline
+    description: Offline (training) feature table for the churn model.
+    columns:
+      - name: customer_id
+        description: Entity key.
+      - name: avg_order_value_30d
+        description: Mean order value over the trailing 30 days.
+      - name: order_count_90d
+        description: Completed orders over the trailing 90 days.
+      - name: avg_resolution_hours
+        description: Mean support resolution time.
+      - name: email_domain
+        description: Domain part of the customer email.
+        meta:
+          faultline_terms: [PII]
+      - name: segment_churn_rate
+        description: Observed churn rate within the customer's country segment.
+
+  - name: customer_features_online
+    description: Online (serving) feature table, recomputed from staging at inference time.
+    columns:
+      - name: customer_id
+        description: Entity key.
+      - name: avg_order_value_30d
+        description: Mean order value over the trailing 30 days.
+      - name: order_count_90d
+        description: Completed orders over the trailing 90 days.
+      - name: avg_resolution_hours
+        description: Mean support resolution time.
+      - name: email_domain
+        description: Domain part of the customer email.
+        meta:
+          faultline_terms: [PII]

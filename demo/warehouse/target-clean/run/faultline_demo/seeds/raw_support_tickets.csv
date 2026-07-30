@@ -1,0 +1,13 @@
+
+    
+    
+    
+    create table "warehouse"."main_raw"."raw_support_tickets" ("ticket_id" BIGINT,"customer_id" BIGINT,"opened_at" TIMESTAMP,"resolved_at" TIMESTAMP,"satisfaction_score" INTEGER)
+  ;
+    -- dbt seed --
+    
+          COPY "warehouse"."main_raw"."raw_support_tickets" FROM 'C:\Users\penta\faultline\demo\warehouse\seeds\raw_support_tickets.csv' (FORMAT CSV, HEADER TRUE, DELIMITER ',')
+        
+
+;
+  

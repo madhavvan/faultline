@@ -1,0 +1,57 @@
+# The ML layer of the demo pipeline.
+#
+# dbt describes tables and columns. It has no notion of a feature, a model or an endpoint,
+# so this file supplies them — standing in for the feature store and model registry that
+# would in reality emit these entities to DataHub.
+#
+# A feature whose backing warehouse column does not exist is skipped automatically. That is
+# what keeps the clean and faulty worlds consistent from one spec: when
+# `dbt build --vars '{clean: true}'` omits segment_churn_rate, the leaky feature simply is
+# not created, rather than dangling.
+
+feature_platform: feast
+model_platform: mlflow
+deployment_platform: sagemaker
+
+feature_tables:
+  - name: customer_features_offline
+    description: Offline feature table — what the churn model trains on.
+    serving: offline
+    source: main_features.customer_features_offline
+    features:
+      - avg_order_value_30d
+      - order_count_90d
+      - avg_resolution_hours
+      - email_domain
+      - segment_churn_rate
+
+  - name: customer_features_online
+    description: Online feature table — what the serving path reads at inference time.
+    serving: online
+    source: main_features.customer_features_online
+    features:
+      - avg_order_value_30d
+      - order_count_90d
+      - avg_resolution_hours
+      - email_domain
+
+models:
+  - name: churn_propensity_v7
+    description: >-
+      Predicts 90-day churn probability for the retention campaign. Scores every active
+      customer nightly; the top decile receives a discount offer.
+    owner: ml-platform
+    feature_table: customer_features_offline
+
+    # Names the prediction target. Without this (or a Label glossary term on the column)
+    # the leakage detector stays silent rather than guessing from a column name.
+    label_column: churned
+
+    deployment: churn-propensity-prod
+    deployment_description: Production inference endpoint, ~1.2M scores/day.
+
+    training_metrics:
+      auc: 0.94
+      precision_at_10: 0.71
+    online_metrics:
+      auc: 0.62

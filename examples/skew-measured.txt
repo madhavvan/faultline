@@ -1,0 +1,18 @@
+Train/serve skew in `avg_order_value_30d`
+==============================================================
+  rows compared                         39
+  offline mean (30-day window)       66.24
+  online  mean ( 7-day window)       65.29
+
+What a distribution monitor compares:
+  shift in the mean                   1.4%   <- no alert fires
+  correlation                        0.881
+
+What the model is actually served:
+  mean per-row error                 20.7%
+  rows more than 10% wrong           51.3%
+
+The aggregate means agree to within 1.4% while 51% of served rows
+are more than 10% wrong. That gap is the whole argument: this defect is invisible
+in the data distribution and unambiguous in the lineage graph — one path averages
+over 30 days, the other over 7.

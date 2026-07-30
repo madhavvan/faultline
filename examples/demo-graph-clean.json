@@ -1,0 +1,1470 @@
+{
+  "captured_at": null,
+  "column_edges": [
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD),avg_order_value_30d)",
+      "query": null,
+      "transform": "identity",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),avg_order_value_30d)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD),avg_resolution_hours)",
+      "query": null,
+      "transform": "identity",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),avg_resolution_hours)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_risk,PROD),segment_churn_rate)",
+      "query": null,
+      "transform": "AVG(CASE WHEN churned THEN 1.0 ELSE 0.0 END) OVER (PARTITION BY country)",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),churned)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_risk,PROD),country)",
+      "query": null,
+      "transform": "identity",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),country)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_risk,PROD),segment_churn_rate)",
+      "query": null,
+      "transform": "AVG(CASE WHEN churned THEN 1.0 ELSE 0.0 END) OVER (PARTITION BY country)",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),country)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD),customer_id)",
+      "query": null,
+      "transform": "identity",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),customer_id)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_risk,PROD),customer_id)",
+      "query": null,
+      "transform": "identity",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),customer_id)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD),order_count_90d)",
+      "query": null,
+      "transform": "identity",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),order_count_90d)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),country)",
+      "query": null,
+      "transform": "identity",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_customers,PROD),country)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),customer_id)",
+      "query": null,
+      "transform": "identity",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_customers,PROD),customer_id)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),email_domain)",
+      "query": null,
+      "transform": "SPLIT_PART(email, '@', 2)",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_customers,PROD),email)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),email_hash)",
+      "query": null,
+      "transform": "MD5(email)",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_customers,PROD),email)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),tenure_days)",
+      "query": null,
+      "transform": "DATE_DIFF('DAY', CAST(signup_at AS DATE), CAST('2026-07-01' AS DATE))",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_customers,PROD),signup_at)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),amount_usd)",
+      "query": null,
+      "transform": "ROUND(amount * 1.0, 2)",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD),amount)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),order_date)",
+      "query": null,
+      "transform": "CAST(created_at AS DATE)",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD),created_at)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),customer_id)",
+      "query": null,
+      "transform": "identity",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD),customer_id)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),order_id)",
+      "query": null,
+      "transform": "identity",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD),order_id)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),is_completed)",
+      "query": null,
+      "transform": "CASE WHEN status = 'shipped' THEN TRUE ELSE FALSE END",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD),status)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_tickets,PROD),customer_id)",
+      "query": null,
+      "transform": "identity",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_support_tickets,PROD),customer_id)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_tickets,PROD),resolution_hours)",
+      "query": null,
+      "transform": "DATE_DIFF('HOUR', opened_at, resolved_at)",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_support_tickets,PROD),opened_at)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_tickets,PROD),resolution_hours)",
+      "query": null,
+      "transform": "DATE_DIFF('HOUR', opened_at, resolved_at)",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_support_tickets,PROD),resolved_at)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_tickets,PROD),satisfaction_score)",
+      "query": null,
+      "transform": "identity",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_support_tickets,PROD),satisfaction_score)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_tickets,PROD),ticket_id)",
+      "query": null,
+      "transform": "identity",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_support_tickets,PROD),ticket_id)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),country)",
+      "query": null,
+      "transform": "identity",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),country)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD),customer_id)",
+      "query": null,
+      "transform": "identity",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),customer_id)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),customer_id)",
+      "query": null,
+      "transform": "identity",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),customer_id)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),email_domain)",
+      "query": null,
+      "transform": "identity",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),email_domain)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),email_hash)",
+      "query": null,
+      "transform": "identity",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),email_hash)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),tenure_days)",
+      "query": null,
+      "transform": "identity",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),tenure_days)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD),avg_order_value_30d)",
+      "query": null,
+      "transform": "AVG(CASE WHEN order_date >= CAST('2026-07-01' AS DATE) - 30 THEN amount_usd END)",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),amount_usd)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),avg_order_value_30d)",
+      "query": null,
+      "transform": "AVG(CASE WHEN order_date >= CAST('2026-07-01' AS DATE) - 30 THEN amount_usd END)",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),amount_usd)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD),order_count_90d)",
+      "query": null,
+      "transform": "COUNT(CASE WHEN is_completed AND order_date >= CAST('2026-07-01' AS DATE) - 90 THEN 1 END)",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),is_completed)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),order_count_90d)",
+      "query": null,
+      "transform": "COUNT(CASE WHEN is_completed AND order_date >= CAST('2026-07-01' AS DATE) - 90 THEN 1 END)",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),is_completed)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD),avg_order_value_30d)",
+      "query": null,
+      "transform": "AVG(CASE WHEN order_date >= CAST('2026-07-01' AS DATE) - 30 THEN amount_usd END)",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),order_date)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD),order_count_90d)",
+      "query": null,
+      "transform": "COUNT(CASE WHEN is_completed AND order_date >= CAST('2026-07-01' AS DATE) - 90 THEN 1 END)",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),order_date)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),avg_order_value_30d)",
+      "query": null,
+      "transform": "AVG(CASE WHEN order_date >= CAST('2026-07-01' AS DATE) - 30 THEN amount_usd END)",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),order_date)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),churned)",
+      "query": null,
+      "transform": "CASE WHEN last_order_date < CAST('2026-07-01' AS DATE) - 90 THEN TRUE ELSE FALSE END",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),order_date)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),order_count_90d)",
+      "query": null,
+      "transform": "COUNT(CASE WHEN is_completed AND order_date >= CAST('2026-07-01' AS DATE) - 90 THEN 1 END)",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),order_date)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD),avg_resolution_hours)",
+      "query": null,
+      "transform": "AVG(resolution_hours)",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_tickets,PROD),resolution_hours)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),avg_resolution_hours)",
+      "query": null,
+      "transform": "AVG(resolution_hours)",
+      "upstream": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_tickets,PROD),resolution_hours)"
+    }
+  ],
+  "datahub_version": null,
+  "dataset_edges": [
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD)",
+      "query": null,
+      "transform": null,
+      "upstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_risk,PROD)",
+      "query": null,
+      "transform": null,
+      "upstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD)",
+      "query": null,
+      "transform": null,
+      "upstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_customers,PROD)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD)",
+      "query": null,
+      "transform": null,
+      "upstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_tickets,PROD)",
+      "query": null,
+      "transform": null,
+      "upstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_support_tickets,PROD)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD)",
+      "query": null,
+      "transform": null,
+      "upstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD)",
+      "query": null,
+      "transform": null,
+      "upstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD)",
+      "query": null,
+      "transform": null,
+      "upstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD)",
+      "query": null,
+      "transform": null,
+      "upstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD)",
+      "query": null,
+      "transform": null,
+      "upstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_tickets,PROD)"
+    },
+    {
+      "confidence": 1.0,
+      "downstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD)",
+      "query": null,
+      "transform": null,
+      "upstream": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_tickets,PROD)"
+    }
+  ],
+  "entities": {
+    "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD)": {
+      "custom_properties": {
+        "dbt_materialization": "table",
+        "dbt_resource_type": "model",
+        "dbt_unique_id": "model.faultline_demo.customer_features_offline"
+      },
+      "deployments": [],
+      "description": "Offline (training) feature table for the churn model.",
+      "domain": null,
+      "downstream_jobs": [],
+      "feature_sources": [],
+      "fields": [
+        {
+          "description": "Entity key.",
+          "field_path": "customer_id",
+          "native_type": "BIGINT",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "BIGINT",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD),customer_id)"
+        },
+        {
+          "description": "Mean order value over the trailing 30 days.",
+          "field_path": "avg_order_value_30d",
+          "native_type": "DOUBLE",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "DOUBLE",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD),avg_order_value_30d)"
+        },
+        {
+          "description": "Completed orders over the trailing 90 days.",
+          "field_path": "order_count_90d",
+          "native_type": "BIGINT",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "BIGINT",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD),order_count_90d)"
+        },
+        {
+          "description": "Mean support resolution time.",
+          "field_path": "avg_resolution_hours",
+          "native_type": "DOUBLE",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "DOUBLE",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD),avg_resolution_hours)"
+        }
+      ],
+      "groups": [],
+      "hyper_parameters": {},
+      "kind": "DATASET",
+      "ml_features": [],
+      "ml_primary_keys": [],
+      "name": "main_features.customer_features_offline",
+      "online_metrics": {},
+      "owners": [],
+      "platform": "duckdb",
+      "removed": false,
+      "structured_properties": {},
+      "tags": [],
+      "terms": [],
+      "training_jobs": [],
+      "training_metrics": {},
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD)"
+    },
+    "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD)": {
+      "custom_properties": {
+        "dbt_materialization": "table",
+        "dbt_resource_type": "model",
+        "dbt_unique_id": "model.faultline_demo.customer_features_online"
+      },
+      "deployments": [],
+      "description": "Online (serving) feature table, recomputed from staging at inference time.",
+      "domain": null,
+      "downstream_jobs": [],
+      "feature_sources": [],
+      "fields": [
+        {
+          "description": "Entity key.",
+          "field_path": "customer_id",
+          "native_type": "BIGINT",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "BIGINT",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD),customer_id)"
+        },
+        {
+          "description": "Mean order value over the trailing 30 days.",
+          "field_path": "avg_order_value_30d",
+          "native_type": "DOUBLE",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "DOUBLE",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD),avg_order_value_30d)"
+        },
+        {
+          "description": "Completed orders over the trailing 90 days.",
+          "field_path": "order_count_90d",
+          "native_type": "BIGINT",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "BIGINT",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD),order_count_90d)"
+        },
+        {
+          "description": "Mean support resolution time.",
+          "field_path": "avg_resolution_hours",
+          "native_type": "DOUBLE",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "DOUBLE",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD),avg_resolution_hours)"
+        }
+      ],
+      "groups": [],
+      "hyper_parameters": {},
+      "kind": "DATASET",
+      "ml_features": [],
+      "ml_primary_keys": [],
+      "name": "main_features.customer_features_online",
+      "online_metrics": {},
+      "owners": [],
+      "platform": "duckdb",
+      "removed": false,
+      "structured_properties": {},
+      "tags": [],
+      "terms": [],
+      "training_jobs": [],
+      "training_metrics": {},
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD)"
+    },
+    "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD)": {
+      "custom_properties": {
+        "dbt_materialization": "table",
+        "dbt_resource_type": "model",
+        "dbt_unique_id": "model.faultline_demo.customer_360"
+      },
+      "deployments": [],
+      "description": "One row per customer -- behavioural aggregates plus the churn label.",
+      "domain": null,
+      "downstream_jobs": [],
+      "feature_sources": [],
+      "fields": [
+        {
+          "description": "Primary key of the customer.",
+          "field_path": "customer_id",
+          "native_type": "BIGINT",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "BIGINT",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),customer_id)"
+        },
+        {
+          "description": "MD5 of the customer email.",
+          "field_path": "email_hash",
+          "native_type": "VARCHAR",
+          "nullable": true,
+          "tags": [],
+          "terms": [
+            "urn:li:glossaryTerm:PII"
+          ],
+          "type_class": "VARCHAR",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),email_hash)"
+        },
+        {
+          "description": "Domain part of the customer email.",
+          "field_path": "email_domain",
+          "native_type": "VARCHAR",
+          "nullable": true,
+          "tags": [],
+          "terms": [
+            "urn:li:glossaryTerm:PII"
+          ],
+          "type_class": "VARCHAR",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),email_domain)"
+        },
+        {
+          "description": "ISO country code.",
+          "field_path": "country",
+          "native_type": "VARCHAR",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "VARCHAR",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),country)"
+        },
+        {
+          "description": "Days since signup.",
+          "field_path": "tenure_days",
+          "native_type": "BIGINT",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "BIGINT",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),tenure_days)"
+        },
+        {
+          "description": "Mean order value over the trailing 30 days.",
+          "field_path": "avg_order_value_30d",
+          "native_type": "DOUBLE",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "DOUBLE",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),avg_order_value_30d)"
+        },
+        {
+          "description": "Completed orders over the trailing 90 days.",
+          "field_path": "order_count_90d",
+          "native_type": "BIGINT",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "BIGINT",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),order_count_90d)"
+        },
+        {
+          "description": "Mean support resolution time.",
+          "field_path": "avg_resolution_hours",
+          "native_type": "DOUBLE",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "DOUBLE",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),avg_resolution_hours)"
+        },
+        {
+          "description": "TARGET: no completed order in the last 90 days.",
+          "field_path": "churned",
+          "native_type": "BOOLEAN",
+          "nullable": true,
+          "tags": [],
+          "terms": [
+            "urn:li:glossaryTerm:Label"
+          ],
+          "type_class": "BOOLEAN",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD),churned)"
+        }
+      ],
+      "groups": [],
+      "hyper_parameters": {},
+      "kind": "DATASET",
+      "ml_features": [],
+      "ml_primary_keys": [],
+      "name": "main_marts.customer_360",
+      "online_metrics": {},
+      "owners": [],
+      "platform": "duckdb",
+      "removed": false,
+      "structured_properties": {},
+      "tags": [],
+      "terms": [],
+      "training_jobs": [],
+      "training_metrics": {},
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_360,PROD)"
+    },
+    "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_risk,PROD)": {
+      "custom_properties": {
+        "dbt_materialization": "table",
+        "dbt_resource_type": "model",
+        "dbt_unique_id": "model.faultline_demo.customer_risk"
+      },
+      "deployments": [],
+      "description": "Segment-level churn rate for the retention dashboard.",
+      "domain": null,
+      "downstream_jobs": [],
+      "feature_sources": [],
+      "fields": [
+        {
+          "description": "Primary key of the customer.",
+          "field_path": "customer_id",
+          "native_type": "BIGINT",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "BIGINT",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_risk,PROD),customer_id)"
+        },
+        {
+          "description": "Segment key.",
+          "field_path": "country",
+          "native_type": "VARCHAR",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "VARCHAR",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_risk,PROD),country)"
+        },
+        {
+          "description": "Observed churn rate within the customer's country segment.",
+          "field_path": "segment_churn_rate",
+          "native_type": "DOUBLE",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "DOUBLE",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_risk,PROD),segment_churn_rate)"
+        }
+      ],
+      "groups": [],
+      "hyper_parameters": {},
+      "kind": "DATASET",
+      "ml_features": [],
+      "ml_primary_keys": [],
+      "name": "main_marts.customer_risk",
+      "online_metrics": {},
+      "owners": [],
+      "platform": "duckdb",
+      "removed": false,
+      "structured_properties": {},
+      "tags": [],
+      "terms": [],
+      "training_jobs": [],
+      "training_metrics": {},
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_marts.customer_risk,PROD)"
+    },
+    "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_customers,PROD)": {
+      "custom_properties": {
+        "dbt_materialization": "seed",
+        "dbt_resource_type": "seed",
+        "dbt_unique_id": "seed.faultline_demo.raw_customers"
+      },
+      "deployments": [],
+      "description": "Raw customer records from the identity service.",
+      "domain": null,
+      "downstream_jobs": [],
+      "feature_sources": [],
+      "fields": [
+        {
+          "description": "Primary key of the customer.",
+          "field_path": "customer_id",
+          "native_type": "BIGINT",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "BIGINT",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_customers,PROD),customer_id)"
+        },
+        {
+          "description": "Customer email address.",
+          "field_path": "email",
+          "native_type": "VARCHAR",
+          "nullable": true,
+          "tags": [],
+          "terms": [
+            "urn:li:glossaryTerm:PII"
+          ],
+          "type_class": "VARCHAR",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_customers,PROD),email)"
+        },
+        {
+          "description": "Customer phone number.",
+          "field_path": "phone",
+          "native_type": "VARCHAR",
+          "nullable": true,
+          "tags": [],
+          "terms": [
+            "urn:li:glossaryTerm:PII"
+          ],
+          "type_class": "VARCHAR",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_customers,PROD),phone)"
+        },
+        {
+          "description": "ISO country code of the billing address.",
+          "field_path": "country",
+          "native_type": "VARCHAR",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "VARCHAR",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_customers,PROD),country)"
+        },
+        {
+          "description": "Account creation timestamp.",
+          "field_path": "signup_at",
+          "native_type": "TIMESTAMP",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "TIMESTAMP",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_customers,PROD),signup_at)"
+        }
+      ],
+      "groups": [],
+      "hyper_parameters": {},
+      "kind": "DATASET",
+      "ml_features": [],
+      "ml_primary_keys": [],
+      "name": "main_raw.raw_customers",
+      "online_metrics": {},
+      "owners": [],
+      "platform": "duckdb",
+      "removed": false,
+      "structured_properties": {},
+      "tags": [],
+      "terms": [],
+      "training_jobs": [],
+      "training_metrics": {},
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_customers,PROD)"
+    },
+    "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD)": {
+      "custom_properties": {
+        "dbt_materialization": "seed",
+        "dbt_resource_type": "seed",
+        "dbt_unique_id": "seed.faultline_demo.raw_orders"
+      },
+      "deployments": [],
+      "description": "Raw order feed from the commerce platform.",
+      "domain": null,
+      "downstream_jobs": [],
+      "feature_sources": [],
+      "fields": [
+        {
+          "description": "Primary key of the order.",
+          "field_path": "order_id",
+          "native_type": "BIGINT",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "BIGINT",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD),order_id)"
+        },
+        {
+          "description": "Customer who placed the order.",
+          "field_path": "customer_id",
+          "native_type": "BIGINT",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "BIGINT",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD),customer_id)"
+        },
+        {
+          "description": "Order gross total in USD.",
+          "field_path": "amount",
+          "native_type": "DECIMAL(18,2)",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "DECIMAL",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD),amount)"
+        },
+        {
+          "description": "One of placed, shipped, cancelled, refunded.",
+          "field_path": "status",
+          "native_type": "VARCHAR",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "VARCHAR",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD),status)"
+        },
+        {
+          "description": "When the order was placed.",
+          "field_path": "created_at",
+          "native_type": "TIMESTAMP",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "TIMESTAMP",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD),created_at)"
+        }
+      ],
+      "groups": [],
+      "hyper_parameters": {},
+      "kind": "DATASET",
+      "ml_features": [],
+      "ml_primary_keys": [],
+      "name": "main_raw.raw_orders",
+      "online_metrics": {},
+      "owners": [],
+      "platform": "duckdb",
+      "removed": false,
+      "structured_properties": {},
+      "tags": [],
+      "terms": [],
+      "training_jobs": [],
+      "training_metrics": {},
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD)"
+    },
+    "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_support_tickets,PROD)": {
+      "custom_properties": {
+        "dbt_materialization": "seed",
+        "dbt_resource_type": "seed",
+        "dbt_unique_id": "seed.faultline_demo.raw_support_tickets"
+      },
+      "deployments": [],
+      "description": "Raw support ticket feed.",
+      "domain": null,
+      "downstream_jobs": [],
+      "feature_sources": [],
+      "fields": [
+        {
+          "description": "Primary key of the ticket.",
+          "field_path": "ticket_id",
+          "native_type": "BIGINT",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "BIGINT",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_support_tickets,PROD),ticket_id)"
+        },
+        {
+          "description": "Customer who opened the ticket.",
+          "field_path": "customer_id",
+          "native_type": "BIGINT",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "BIGINT",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_support_tickets,PROD),customer_id)"
+        },
+        {
+          "description": "When the ticket was opened.",
+          "field_path": "opened_at",
+          "native_type": "TIMESTAMP",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "TIMESTAMP",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_support_tickets,PROD),opened_at)"
+        },
+        {
+          "description": "When the ticket was resolved.",
+          "field_path": "resolved_at",
+          "native_type": "TIMESTAMP",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "TIMESTAMP",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_support_tickets,PROD),resolved_at)"
+        },
+        {
+          "description": "Post-resolution CSAT, 1-5.",
+          "field_path": "satisfaction_score",
+          "native_type": "INTEGER",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "INTEGER",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_support_tickets,PROD),satisfaction_score)"
+        }
+      ],
+      "groups": [],
+      "hyper_parameters": {},
+      "kind": "DATASET",
+      "ml_features": [],
+      "ml_primary_keys": [],
+      "name": "main_raw.raw_support_tickets",
+      "online_metrics": {},
+      "owners": [],
+      "platform": "duckdb",
+      "removed": false,
+      "structured_properties": {},
+      "tags": [],
+      "terms": [],
+      "training_jobs": [],
+      "training_metrics": {},
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_support_tickets,PROD)"
+    },
+    "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD)": {
+      "custom_properties": {
+        "dbt_materialization": "table",
+        "dbt_resource_type": "model",
+        "dbt_unique_id": "model.faultline_demo.stg_customers"
+      },
+      "deployments": [],
+      "description": "Customer dimension with the address hashed.",
+      "domain": null,
+      "downstream_jobs": [],
+      "feature_sources": [],
+      "fields": [
+        {
+          "description": "Primary key of the customer.",
+          "field_path": "customer_id",
+          "native_type": "BIGINT",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "BIGINT",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),customer_id)"
+        },
+        {
+          "description": "MD5 of the customer email.",
+          "field_path": "email_hash",
+          "native_type": "VARCHAR",
+          "nullable": true,
+          "tags": [],
+          "terms": [
+            "urn:li:glossaryTerm:PII"
+          ],
+          "type_class": "VARCHAR",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),email_hash)"
+        },
+        {
+          "description": "Domain part of the customer email, retained for account segmentation.",
+          "field_path": "email_domain",
+          "native_type": "VARCHAR",
+          "nullable": true,
+          "tags": [],
+          "terms": [
+            "urn:li:glossaryTerm:PII"
+          ],
+          "type_class": "VARCHAR",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),email_domain)"
+        },
+        {
+          "description": "ISO country code.",
+          "field_path": "country",
+          "native_type": "VARCHAR",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "VARCHAR",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),country)"
+        },
+        {
+          "description": "Days since signup.",
+          "field_path": "tenure_days",
+          "native_type": "BIGINT",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "BIGINT",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD),tenure_days)"
+        }
+      ],
+      "groups": [],
+      "hyper_parameters": {},
+      "kind": "DATASET",
+      "ml_features": [],
+      "ml_primary_keys": [],
+      "name": "main_staging.stg_customers",
+      "online_metrics": {},
+      "owners": [],
+      "platform": "duckdb",
+      "removed": false,
+      "structured_properties": {},
+      "tags": [],
+      "terms": [],
+      "training_jobs": [],
+      "training_metrics": {},
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_customers,PROD)"
+    },
+    "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD)": {
+      "custom_properties": {
+        "dbt_materialization": "table",
+        "dbt_resource_type": "model",
+        "dbt_unique_id": "model.faultline_demo.stg_orders"
+      },
+      "deployments": [],
+      "description": "Normalised orders, one row per order.",
+      "domain": null,
+      "downstream_jobs": [],
+      "feature_sources": [],
+      "fields": [
+        {
+          "description": "Primary key of the order.",
+          "field_path": "order_id",
+          "native_type": "BIGINT",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "BIGINT",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),order_id)"
+        },
+        {
+          "description": "Customer who placed the order.",
+          "field_path": "customer_id",
+          "native_type": "BIGINT",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "BIGINT",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),customer_id)"
+        },
+        {
+          "description": "Order total in the reporting currency, converted from USD.",
+          "field_path": "amount_usd",
+          "native_type": "DECIMAL(18,2)",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "DECIMAL",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),amount_usd)"
+        },
+        {
+          "description": "True when the order reached shipped status.",
+          "field_path": "is_completed",
+          "native_type": "BOOLEAN",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "BOOLEAN",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),is_completed)"
+        },
+        {
+          "description": "Date the order was placed.",
+          "field_path": "order_date",
+          "native_type": "DATE",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "DATE",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD),order_date)"
+        }
+      ],
+      "groups": [],
+      "hyper_parameters": {},
+      "kind": "DATASET",
+      "ml_features": [],
+      "ml_primary_keys": [],
+      "name": "main_staging.stg_orders",
+      "online_metrics": {},
+      "owners": [],
+      "platform": "duckdb",
+      "removed": false,
+      "structured_properties": {},
+      "tags": [],
+      "terms": [],
+      "training_jobs": [],
+      "training_metrics": {},
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_orders,PROD)"
+    },
+    "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_tickets,PROD)": {
+      "custom_properties": {
+        "dbt_materialization": "table",
+        "dbt_resource_type": "model",
+        "dbt_unique_id": "model.faultline_demo.stg_tickets"
+      },
+      "deployments": [],
+      "description": "Support tickets with resolution time computed.",
+      "domain": null,
+      "downstream_jobs": [],
+      "feature_sources": [],
+      "fields": [
+        {
+          "description": "Primary key of the ticket.",
+          "field_path": "ticket_id",
+          "native_type": "BIGINT",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "BIGINT",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_tickets,PROD),ticket_id)"
+        },
+        {
+          "description": "Customer who opened the ticket.",
+          "field_path": "customer_id",
+          "native_type": "BIGINT",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "BIGINT",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_tickets,PROD),customer_id)"
+        },
+        {
+          "description": "Hours between opened_at and resolved_at.",
+          "field_path": "resolution_hours",
+          "native_type": "BIGINT",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "BIGINT",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_tickets,PROD),resolution_hours)"
+        },
+        {
+          "description": "Post-resolution CSAT, 1-5.",
+          "field_path": "satisfaction_score",
+          "native_type": "INTEGER",
+          "nullable": true,
+          "tags": [],
+          "terms": [],
+          "type_class": "INTEGER",
+          "urn": "urn:li:schemaField:(urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_tickets,PROD),satisfaction_score)"
+        }
+      ],
+      "groups": [],
+      "hyper_parameters": {},
+      "kind": "DATASET",
+      "ml_features": [],
+      "ml_primary_keys": [],
+      "name": "main_staging.stg_tickets",
+      "online_metrics": {},
+      "owners": [],
+      "platform": "duckdb",
+      "removed": false,
+      "structured_properties": {},
+      "tags": [],
+      "terms": [],
+      "training_jobs": [],
+      "training_metrics": {},
+      "urn": "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_staging.stg_tickets,PROD)"
+    },
+    "urn:li:mlFeature:(customer_features_offline,avg_order_value_30d)": {
+      "custom_properties": {
+        "faultline.serving": "offline"
+      },
+      "deployments": [],
+      "description": "Offline copy of avg_order_value_30d",
+      "domain": null,
+      "downstream_jobs": [],
+      "feature_sources": [
+        "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD)"
+      ],
+      "fields": [],
+      "groups": [],
+      "hyper_parameters": {},
+      "kind": "ML_FEATURE",
+      "ml_features": [],
+      "ml_primary_keys": [],
+      "name": "avg_order_value_30d",
+      "online_metrics": {},
+      "owners": [],
+      "platform": null,
+      "removed": false,
+      "structured_properties": {},
+      "tags": [],
+      "terms": [],
+      "training_jobs": [],
+      "training_metrics": {},
+      "urn": "urn:li:mlFeature:(customer_features_offline,avg_order_value_30d)"
+    },
+    "urn:li:mlFeature:(customer_features_offline,avg_resolution_hours)": {
+      "custom_properties": {
+        "faultline.serving": "offline"
+      },
+      "deployments": [],
+      "description": "Offline copy of avg_resolution_hours",
+      "domain": null,
+      "downstream_jobs": [],
+      "feature_sources": [
+        "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD)"
+      ],
+      "fields": [],
+      "groups": [],
+      "hyper_parameters": {},
+      "kind": "ML_FEATURE",
+      "ml_features": [],
+      "ml_primary_keys": [],
+      "name": "avg_resolution_hours",
+      "online_metrics": {},
+      "owners": [],
+      "platform": null,
+      "removed": false,
+      "structured_properties": {},
+      "tags": [],
+      "terms": [],
+      "training_jobs": [],
+      "training_metrics": {},
+      "urn": "urn:li:mlFeature:(customer_features_offline,avg_resolution_hours)"
+    },
+    "urn:li:mlFeature:(customer_features_offline,order_count_90d)": {
+      "custom_properties": {
+        "faultline.serving": "offline"
+      },
+      "deployments": [],
+      "description": "Offline copy of order_count_90d",
+      "domain": null,
+      "downstream_jobs": [],
+      "feature_sources": [
+        "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_offline,PROD)"
+      ],
+      "fields": [],
+      "groups": [],
+      "hyper_parameters": {},
+      "kind": "ML_FEATURE",
+      "ml_features": [],
+      "ml_primary_keys": [],
+      "name": "order_count_90d",
+      "online_metrics": {},
+      "owners": [],
+      "platform": null,
+      "removed": false,
+      "structured_properties": {},
+      "tags": [],
+      "terms": [],
+      "training_jobs": [],
+      "training_metrics": {},
+      "urn": "urn:li:mlFeature:(customer_features_offline,order_count_90d)"
+    },
+    "urn:li:mlFeature:(customer_features_online,avg_order_value_30d)": {
+      "custom_properties": {
+        "faultline.serving": "online"
+      },
+      "deployments": [],
+      "description": "Online copy of avg_order_value_30d",
+      "domain": null,
+      "downstream_jobs": [],
+      "feature_sources": [
+        "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD)"
+      ],
+      "fields": [],
+      "groups": [],
+      "hyper_parameters": {},
+      "kind": "ML_FEATURE",
+      "ml_features": [],
+      "ml_primary_keys": [],
+      "name": "avg_order_value_30d",
+      "online_metrics": {},
+      "owners": [],
+      "platform": null,
+      "removed": false,
+      "structured_properties": {},
+      "tags": [],
+      "terms": [],
+      "training_jobs": [],
+      "training_metrics": {},
+      "urn": "urn:li:mlFeature:(customer_features_online,avg_order_value_30d)"
+    },
+    "urn:li:mlFeature:(customer_features_online,avg_resolution_hours)": {
+      "custom_properties": {
+        "faultline.serving": "online"
+      },
+      "deployments": [],
+      "description": "Online copy of avg_resolution_hours",
+      "domain": null,
+      "downstream_jobs": [],
+      "feature_sources": [
+        "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD)"
+      ],
+      "fields": [],
+      "groups": [],
+      "hyper_parameters": {},
+      "kind": "ML_FEATURE",
+      "ml_features": [],
+      "ml_primary_keys": [],
+      "name": "avg_resolution_hours",
+      "online_metrics": {},
+      "owners": [],
+      "platform": null,
+      "removed": false,
+      "structured_properties": {},
+      "tags": [],
+      "terms": [],
+      "training_jobs": [],
+      "training_metrics": {},
+      "urn": "urn:li:mlFeature:(customer_features_online,avg_resolution_hours)"
+    },
+    "urn:li:mlFeature:(customer_features_online,order_count_90d)": {
+      "custom_properties": {
+        "faultline.serving": "online"
+      },
+      "deployments": [],
+      "description": "Online copy of order_count_90d",
+      "domain": null,
+      "downstream_jobs": [],
+      "feature_sources": [
+        "urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_features.customer_features_online,PROD)"
+      ],
+      "fields": [],
+      "groups": [],
+      "hyper_parameters": {},
+      "kind": "ML_FEATURE",
+      "ml_features": [],
+      "ml_primary_keys": [],
+      "name": "order_count_90d",
+      "online_metrics": {},
+      "owners": [],
+      "platform": null,
+      "removed": false,
+      "structured_properties": {},
+      "tags": [],
+      "terms": [],
+      "training_jobs": [],
+      "training_metrics": {},
+      "urn": "urn:li:mlFeature:(customer_features_online,order_count_90d)"
+    },
+    "urn:li:mlFeatureTable:(urn:li:dataPlatform:feast,customer_features_offline)": {
+      "custom_properties": {},
+      "deployments": [],
+      "description": "Offline feature table \u2014 what the churn model trains on.",
+      "domain": null,
+      "downstream_jobs": [],
+      "feature_sources": [],
+      "fields": [],
+      "groups": [],
+      "hyper_parameters": {},
+      "kind": "ML_FEATURE_TABLE",
+      "ml_features": [
+        "urn:li:mlFeature:(customer_features_offline,avg_order_value_30d)",
+        "urn:li:mlFeature:(customer_features_offline,order_count_90d)",
+        "urn:li:mlFeature:(customer_features_offline,avg_resolution_hours)"
+      ],
+      "ml_primary_keys": [],
+      "name": "customer_features_offline",
+      "online_metrics": {},
+      "owners": [],
+      "platform": "feast",
+      "removed": false,
+      "structured_properties": {},
+      "tags": [],
+      "terms": [],
+      "training_jobs": [],
+      "training_metrics": {},
+      "urn": "urn:li:mlFeatureTable:(urn:li:dataPlatform:feast,customer_features_offline)"
+    },
+    "urn:li:mlFeatureTable:(urn:li:dataPlatform:feast,customer_features_online)": {
+      "custom_properties": {},
+      "deployments": [],
+      "description": "Online feature table \u2014 what the serving path reads at inference time.",
+      "domain": null,
+      "downstream_jobs": [],
+      "feature_sources": [],
+      "fields": [],
+      "groups": [],
+      "hyper_parameters": {},
+      "kind": "ML_FEATURE_TABLE",
+      "ml_features": [
+        "urn:li:mlFeature:(customer_features_online,avg_order_value_30d)",
+        "urn:li:mlFeature:(customer_features_online,order_count_90d)",
+        "urn:li:mlFeature:(customer_features_online,avg_resolution_hours)"
+      ],
+      "ml_primary_keys": [],
+      "name": "customer_features_online",
+      "online_metrics": {},
+      "owners": [],
+      "platform": "feast",
+      "removed": false,
+      "structured_properties": {},
+      "tags": [],
+      "terms": [],
+      "training_jobs": [],
+      "training_metrics": {},
+      "urn": "urn:li:mlFeatureTable:(urn:li:dataPlatform:feast,customer_features_online)"
+    },
+    "urn:li:mlModel:(urn:li:dataPlatform:mlflow,churn_propensity_v7,PROD)": {
+      "custom_properties": {
+        "env": "PROD",
+        "faultline.label_column": "churned",
+        "owner": "ml-platform"
+      },
+      "deployments": [
+        "urn:li:mlModelDeployment:(urn:li:dataPlatform:sagemaker,churn-propensity-prod,PROD)"
+      ],
+      "description": "Predicts 90-day churn probability for the retention campaign. Scores every active customer nightly; the top decile receives a discount offer.",
+      "domain": null,
+      "downstream_jobs": [],
+      "feature_sources": [],
+      "fields": [],
+      "groups": [],
+      "hyper_parameters": {},
+      "kind": "ML_MODEL",
+      "ml_features": [
+        "urn:li:mlFeature:(customer_features_offline,avg_order_value_30d)",
+        "urn:li:mlFeature:(customer_features_offline,order_count_90d)",
+        "urn:li:mlFeature:(customer_features_offline,avg_resolution_hours)"
+      ],
+      "ml_primary_keys": [],
+      "name": "churn_propensity_v7",
+      "online_metrics": {
+        "auc": "0.62"
+      },
+      "owners": [],
+      "platform": "mlflow",
+      "removed": false,
+      "structured_properties": {},
+      "tags": [],
+      "terms": [],
+      "training_jobs": [],
+      "training_metrics": {
+        "auc": "0.94",
+        "precision_at_10": "0.71"
+      },
+      "urn": "urn:li:mlModel:(urn:li:dataPlatform:mlflow,churn_propensity_v7,PROD)"
+    },
+    "urn:li:mlModelDeployment:(urn:li:dataPlatform:sagemaker,churn-propensity-prod,PROD)": {
+      "custom_properties": {},
+      "deployments": [],
+      "description": "Production inference endpoint, ~1.2M scores/day.",
+      "domain": null,
+      "downstream_jobs": [],
+      "feature_sources": [],
+      "fields": [],
+      "groups": [],
+      "hyper_parameters": {},
+      "kind": "ML_MODEL_DEPLOYMENT",
+      "ml_features": [],
+      "ml_primary_keys": [],
+      "name": "churn-propensity-prod",
+      "online_metrics": {},
+      "owners": [],
+      "platform": "sagemaker",
+      "removed": false,
+      "structured_properties": {},
+      "tags": [],
+      "terms": [],
+      "training_jobs": [],
+      "training_metrics": {},
+      "urn": "urn:li:mlModelDeployment:(urn:li:dataPlatform:sagemaker,churn-propensity-prod,PROD)"
+    }
+  },
+  "origin": null,
+  "source": "dbt:faultline_demo(clean)"
+}

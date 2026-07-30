@@ -1,0 +1,42 @@
+version: 2
+
+models:
+  - name: customer_360
+    description: One row per customer -- behavioural aggregates plus the churn label.
+    columns:
+      - name: customer_id
+        description: Primary key of the customer.
+      - name: email_hash
+        description: MD5 of the customer email.
+        meta:
+          faultline_terms: [PII]
+      - name: email_domain
+        description: Domain part of the customer email.
+        meta:
+          faultline_terms: [PII]
+      - name: country
+        description: ISO country code.
+      - name: tenure_days
+        description: Days since signup.
+      - name: avg_order_value_30d
+        description: Mean order value over the trailing 30 days.
+      - name: order_count_90d
+        description: Completed orders over the trailing 90 days.
+      - name: avg_resolution_hours
+        description: Mean support resolution time.
+      - name: churned
+        description: "TARGET: no completed order in the last 90 days."
+        # This is what tells Faultline which column is the prediction target. Without it the
+        # leakage detector stays silent rather than guessing from a column name.
+        meta:
+          faultline_terms: [Label]
+
+  - name: customer_risk
+    description: Segment-level churn rate for the retention dashboard.
+    columns:
+      - name: customer_id
+        description: Primary key of the customer.
+      - name: country
+        description: Segment key.
+      - name: segment_churn_rate
+        description: Observed churn rate within the customer's country segment.

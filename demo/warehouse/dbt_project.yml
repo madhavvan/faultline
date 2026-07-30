@@ -1,0 +1,38 @@
+name: faultline_demo
+version: "1.0.0"
+config-version: 2
+profile: faultline_demo
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+# The four faults are toggled here rather than by editing SQL, so one project renders both
+# the pipeline as intended and the pipeline as it actually shipped. `dbt build` gives the
+# faulty world; `--vars '{clean: true}'` gives the baseline it is compared against.
+vars:
+  # `dbt build` renders the pipeline as it actually shipped, with all four faults.
+  # `dbt build --vars '{clean: true}'` renders it as its authors believed they built it.
+  # Each fault is derived from this single flag inside the models, so the two worlds can
+  # never drift apart in the way two hand-maintained copies would.
+  clean: false
+
+  # Reference date for all trailing windows; matches the committed seed horizon.
+  as_of_date: "2026-07-01"
+
+seeds:
+  faultline_demo:
+    +schema: raw
+
+models:
+  faultline_demo:
+    staging:
+      +materialized: table
+      +schema: staging
+    marts:
+      +materialized: table
+      +schema: marts
+    features:
+      +materialized: table
+      +schema: features

@@ -1,0 +1,103 @@
+name: Faultline
+
+# Gate pull requests on structural ML risk.
+#
+# The check runs against the DataHub graph as it is *now* and compares against a semantic
+# baseline captured from the main branch, so a PR that changes an upstream column's meaning
+# is caught before it reaches the model that depends on it.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  structural-risk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The baseline lives on main; fetch it so a PR can diff against it.
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Faultline
+        run: pip install -e .
+
+      - name: Restore semantic baseline from main
+        run: |
+          git show origin/main:.faultline/baseline.json > /tmp/baseline.json 2>/dev/null \
+            || echo "no baseline on main yet; change detection will be skipped"
+
+      - name: Check for structural ML risk
+        id: faultline
+        env:
+          DATAHUB_GMS_URL: ${{ secrets.DATAHUB_GMS_URL }}
+          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+        run: |
+          faultline check \
+            --baseline /tmp/baseline.json \
+            --comment /tmp/faultline-comment.md
+        continue-on-error: true
+
+      - name: Comment on the pull request
+        if: github.event_name == 'pull_request' && hashFiles('/tmp/faultline-comment.md') != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('/tmp/faultline-comment.md', 'utf8');
+            const marker = '<!-- faultline-report -->';
+
+            // Update the existing comment rather than stacking a new one on every push.
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(
+              c => c.user.type === 'Bot' && c.body.includes(marker)
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      - name: Fail if new blocking findings were introduced
+        if: steps.faultline.outcome == 'failure'
+        run: |
+          echo "::error::Faultline proved new structural risk to a production model."
+          exit 1
+
+      # On main, refresh the baseline and contribute findings back to the graph, so the
+      # catalogue reflects reality and the next PR diffs against current state.
+      - name: Update baseline and write back to DataHub
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        env:
+          DATAHUB_GMS_URL: ${{ secrets.DATAHUB_GMS_URL }}
+          DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
+        run: |
+          mkdir -p .faultline
+          faultline baseline .faultline/baseline.json
+          faultline writeback --apply \
+            --report-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

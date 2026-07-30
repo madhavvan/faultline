@@ -1,0 +1,22 @@
+faultline writeback --dry-run
+==============================================================================
+
+define 5 structured properties: io.faultline.risk, io.faultline.finding_count, io.faultline.last_scanned, io.faultline.findings, io.faultline.proof_summary
+
+structured-property    churn_propensity_v7                           risk=HIGH finding_count=4
+tag                    churn_propensity_v7                           +Faultline_SilentSemanticChange
+tag                    warehouse.main_raw.raw_orders.amount          +Faultline_SilentSemanticChange
+incident               churn_propensity_v7                           CRITICAL: `warehouse.main_raw.raw_orders.amount` changed (currency change) beneath `churn_propensity_v7`
+tag                    churn_propensity_v7                           +Faultline_TargetLeakage
+tag                    customer_features_offline.segment_churn_rate  +Faultline_TargetLeakage
+tag                    warehouse.main_marts.customer_360.churned     +Faultline_TargetLeakage
+incident               churn_propensity_v7                           CRITICAL: Feature `customer_features_offline.segment_churn_rate` derives from label `warehouse.main_marts.customer_360.churned` (3 hops)
+tag                    churn_propensity_v7                           +Faultline_RestrictedData
+tag                    warehouse.main_raw.raw_customers.email        +Faultline_RestrictedData
+incident               churn_propensity_v7                           HIGH: PII column reaches `churn_propensity_v7`
+tag                    churn_propensity_v7                           +Faultline_TrainServeSkew
+tag                    customer_features_offline.avg_order_value_30d +Faultline_TrainServeSkew
+tag                    warehouse.main_raw.raw_orders.amount          +Faultline_TrainServeSkew
+incident               churn_propensity_v7                           HIGH: Offline and online `avg_order_value_30d` are computed differently
+link                   churn_propensity_v7                           report -> https://github.com/faultline-dev/faultline/actions/runs/1
+audit-run              urn:li:dataProcessInstance:faultline-scan-20260727T175015 4 finding(s) across 1 model(s)

@@ -1,0 +1,13 @@
+
+    
+    
+    
+    create table "warehouse"."main_raw"."raw_customers" ("customer_id" BIGINT,"email" VARCHAR,"phone" VARCHAR,"country" VARCHAR,"signup_at" TIMESTAMP)
+  ;
+    -- dbt seed --
+    
+          COPY "warehouse"."main_raw"."raw_customers" FROM 'C:\Users\penta\faultline\demo\warehouse\seeds\raw_customers.csv' (FORMAT CSV, HEADER TRUE, DELIMITER ',')
+        
+
+;
+  

@@ -1,0 +1,14 @@
+# One DuckDB file. dbt-duckdb ties the database name to the file name, so a second file
+# would put the clean world's datasets under different URNs and the two worlds could no
+# longer be compared column-for-column.
+#
+# The two worlds are separated by --target-path instead: each build writes its own
+# manifest/catalog, and the Makefile builds clean first so the database is left holding the
+# faulty tables that demo/measure_skew.py queries.
+faultline_demo:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: warehouse.duckdb
+      threads: 4
