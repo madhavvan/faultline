@@ -2,6 +2,10 @@
 
 **Your model didn't drift. Your graph did.**
 
+[![Faultline](https://github.com/madhavvan/faultline/actions/workflows/faultline.yml/badge.svg)](https://github.com/madhavvan/faultline/actions/workflows/faultline.yml)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
+
 Faultline finds ML failures that are **structural** — provable from the DataHub lineage
 graph, and by construction invisible to anything that watches the data distribution.
 
