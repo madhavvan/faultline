@@ -1,10 +1,12 @@
 name: Faultline
 
-# Gate pull requests on structural ML risk.
+# Two jobs, because they answer two different questions.
 #
-# The check runs against the DataHub graph as it is *now* and compares against a semantic
-# baseline captured from the main branch, so a PR that changes an upstream column's meaning
-# is caught before it reaches the model that depends on it.
+#   verify          — does this repository still do what it claims? Runs entirely
+#                     offline against the committed dbt project and the replayed
+#                     fixtures, so anyone can reproduce it without credentials.
+#   structural-risk — the CI gate itself, pointed at a real DataHub. It needs an
+#                     instance to scan, and says so plainly when there isn't one.
 
 on:
   pull_request:
@@ -17,6 +19,30 @@ permissions:
   pull-requests: write
 
 jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install
+        run: pip install -e ".[dev,demo]"
+
+      - name: Lint
+        run: ruff check src tests demo
+
+      # Includes the check that the committed fixture is a faithful recording of
+      # the committed dbt project, so the two cannot drift apart unnoticed.
+      - name: Tests
+        run: pytest
+
+      - name: The bundled pipeline still proves exactly its four faults
+        run: faultline demo
+
   structural-risk:
     runs-on: ubuntu-latest
     steps:
@@ -28,6 +54,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: pip
 
       - name: Install Faultline
         run: pip install -e .
@@ -43,18 +70,37 @@ jobs:
           DATAHUB_GMS_URL: ${{ secrets.DATAHUB_GMS_URL }}
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
         run: |
+          if [ -z "$DATAHUB_GMS_URL" ]; then
+            echo "No DATAHUB_GMS_URL configured — the live gate has no graph to scan."
+            echo "Set the DATAHUB_GMS_URL and DATAHUB_GMS_TOKEN secrets to enable it."
+            echo "status=unconfigured" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # The comment has to land inside the workspace: hashFiles() resolves
+          # relative to GITHUB_WORKSPACE and returns empty for anything outside
+          # it, so a path under /tmp silently disabled the comment step below.
+          set +e
           faultline check \
             --baseline /tmp/baseline.json \
-            --comment /tmp/faultline-comment.md
-        continue-on-error: true
+            --comment "$GITHUB_WORKSPACE/faultline-comment.md"
+          code=$?
+          set -e
+
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          case "$code" in
+            0) echo "status=clean"    >> "$GITHUB_OUTPUT" ;;
+            1) echo "status=findings" >> "$GITHUB_OUTPUT" ;;
+            *) echo "status=error"    >> "$GITHUB_OUTPUT" ;;
+          esac
 
       - name: Comment on the pull request
-        if: github.event_name == 'pull_request' && hashFiles('/tmp/faultline-comment.md') != ''
+        if: github.event_name == 'pull_request' && hashFiles('faultline-comment.md') != ''
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
-            const body = fs.readFileSync('/tmp/faultline-comment.md', 'utf8');
+            const body = fs.readFileSync('faultline-comment.md', 'utf8');
             const marker = '<!-- faultline-report -->';
 
             // Update the existing comment rather than stacking a new one on every push.
@@ -83,16 +129,29 @@ jobs:
               });
             }
 
-      - name: Fail if new blocking findings were introduced
-        if: steps.faultline.outcome == 'failure'
+      # Exit 1 means the detectors proved something. Exit 2 means they never ran.
+      # Collapsing the second into the first would announce a proven structural
+      # risk when nothing was scanned — precisely the failure this project exists
+      # to prevent, committed by its own CI gate.
+      - name: Fail on proven structural risk
+        if: steps.faultline.outputs.status == 'findings'
         run: |
           echo "::error::Faultline proved new structural risk to a production model."
+          exit 1
+
+      - name: Fail on a scan that could not run
+        if: steps.faultline.outputs.status == 'error'
+        run: |
+          echo "::error::Faultline could not scan the graph (exit ${{ steps.faultline.outputs.code }}). Nothing was proved either way."
           exit 1
 
       # On main, refresh the baseline and contribute findings back to the graph, so the
       # catalogue reflects reality and the next PR diffs against current state.
       - name: Update baseline and write back to DataHub
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: >-
+          github.ref == 'refs/heads/main'
+          && github.event_name == 'push'
+          && steps.faultline.outputs.status != 'unconfigured'
         env:
           DATAHUB_GMS_URL: ${{ secrets.DATAHUB_GMS_URL }}
           DATAHUB_GMS_TOKEN: ${{ secrets.DATAHUB_GMS_TOKEN }}
