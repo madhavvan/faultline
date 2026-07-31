@@ -92,9 +92,6 @@ def demo(
         datasets = graph.datasets()
         columns = sum(len(d.fields) for d in datasets)
         models = graph.models()
-        deployments = [
-            e.name for m in models for d in m.deployments if (e := graph.entity(d))
-        ]
         console.print()
         console.print("[bold]Demo pipeline[/]")
         console.print(
@@ -106,7 +103,12 @@ def demo(
                 f"  lineage parsed from compiled SQL · [dim]{graph.snapshot.origin}[/]"
             )
         for model in models:
-            served = f" served at [cyan]{deployments[0]}[/]" if deployments else ""
+            # Deployments are resolved per model: with several models on the graph, showing
+            # the first model's endpoint against every row would misattribute what serves what.
+            names = [
+                e.name for d in model.deployments if (e := graph.entity(d)) and e.name
+            ]
+            served = f" served at [cyan]{', '.join(names)}[/]" if names else ""
             console.print(f"  model [cyan]{model.name}[/]{served}")
         console.print()
         console.print("[bold]Injected faults[/]")

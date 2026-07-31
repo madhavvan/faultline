@@ -36,10 +36,6 @@ class DataHubConfig(BaseModel):
         return os.environ.get("DATAHUB_GMS_URL", self.server)
 
 
-class DetectionConfig:
-    """Namespace for detection defaults (kept as a class for discoverability)."""
-
-
 class DetectorSettings(BaseModel):
     """Knobs shared across detectors, plus per-detector specifics."""
 

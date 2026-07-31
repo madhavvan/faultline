@@ -29,7 +29,7 @@ def main() -> None:
     (EX / "scan-result.json").write_text(result.model_dump_json(indent=2), encoding="utf-8")
 
     plan = DataHubWriter().plan(
-        result, report_url="https://github.com/faultline-dev/faultline/actions/runs/1"
+        result, report_url="https://github.com/madhavvan/faultline/actions/runs/1"
     )
     (EX / "writeback-plan.txt").write_text(
         "faultline writeback --dry-run\n" + "=" * 78 + "\n\n" + plan.render() + "\n",

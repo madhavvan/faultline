@@ -110,5 +110,5 @@ or `update_description`, so the next agent inherits the conclusion instead of re
 
 ---
 
-Extracted from [Faultline](https://github.com/faultline-dev/faultline), which uses these
+Extracted from [Faultline](https://github.com/madhavvan/faultline), which uses these
 traversals to prove structural ML defects from the DataHub graph. Apache-2.0.

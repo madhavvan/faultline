@@ -18,5 +18,5 @@ tag                    churn_propensity_v7                           +Faultline_
 tag                    customer_features_offline.avg_order_value_30d +Faultline_TrainServeSkew
 tag                    warehouse.main_raw.raw_orders.amount          +Faultline_TrainServeSkew
 incident               churn_propensity_v7                           HIGH: Offline and online `avg_order_value_30d` are computed differently
-link                   churn_propensity_v7                           report -> https://github.com/faultline-dev/faultline/actions/runs/1
-audit-run              urn:li:dataProcessInstance:faultline-scan-20260727T175015 4 finding(s) across 1 model(s)
+link                   churn_propensity_v7                           report -> https://github.com/madhavvan/faultline/actions/runs/1
+audit-run              urn:li:dataProcessInstance:faultline-scan-20260731T010439 4 finding(s) across 1 model(s)
