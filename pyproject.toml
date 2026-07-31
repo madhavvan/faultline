@@ -56,13 +56,13 @@ faultline = "faultline.cli:app"
 Homepage = "https://github.com/madhavvan/faultline"
 Repository = "https://github.com/madhavvan/faultline"
 
+# The demo fixtures under src/faultline/data are captured from a real dbt run and ship in
+# the wheel automatically — hatchling includes every file under the package directory, not
+# just Python. Do NOT add a force-include for them: that lists each fixture twice, and
+# hatchling ≥1.19 fails the build on the duplicate path, which breaks every non-editable
+# install (`pip install .`, `pip install git+...`) at metadata generation.
 [tool.hatch.build.targets.wheel]
 packages = ["src/faultline"]
-
-# The demo fixtures are captured from a real dbt run and shipped in the wheel, so
-# `faultline demo` works from a plain `pip install` with no warehouse to build.
-[tool.hatch.build.targets.wheel.force-include]
-"src/faultline/data" = "faultline/data"
 
 [tool.ruff]
 line-length = 100
