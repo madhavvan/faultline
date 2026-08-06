@@ -56,10 +56,14 @@ Scroll to the **leakage** panel. Hold on the proof path.
 
 > This one is the showstopper. A segment churn-rate rollup — a perfectly reasonable
 > dashboard metric — is computed from the churn label, and then picked up as a model
-> feature. Faultline doesn't infer that. It shows you the path: label, to rollup, to feature
-> table, to model input. Four hops. Every edge exists in DataHub.
+> feature. Faultline doesn't infer that. It shows you the path: the label, to the rollup, to
+> the offline feature column, to the feature the model consumes. Three hops, and every edge
+> exists in DataHub.
 >
 > That 0.94 AUC was never real.
+
+> **Check against the screen before recording:** the panel title says `(3 hops)` and the
+> proof block says `3 lineage hop(s)`. Say the number the screen shows.
 
 ---
 
@@ -77,12 +81,17 @@ Scroll to the **leakage** panel. Hold on the proof path.
 
 **Screen:** `faultline triage --demo`
 
-> Claude reads the proven findings and DataHub's own MCP server for context. It explains
-> consequence, and it can adjust severity by one step with a stated reason — here it
-> de-escalated the PII finding, because only the email domain survives the transform.
+> Claude reads the proven findings, and reads DataHub itself through its own MCP server. It
+> explains consequence, and it can move a severity by one step in either direction with a
+> stated reason. Here it took PII *down* — only the email domain survives the transform —
+> and took the train/serve skew *up*, because a four-times window mismatch on one of five
+> inputs corrupts every prediction, not a subset.
 >
 > What it cannot do is invent a finding. Every structural claim comes from deterministic
 > traversal. The model does the judgement; the graph does the proof.
+
+**Screen note:** the run ends with the cost line — `4/4 assessed · … ~$0.44`. It is worth a
+beat: this is the whole triage, on a live catalogue, for under fifty cents.
 
 ---
 

@@ -25,7 +25,15 @@ from pydantic import BaseModel, Field, field_serializer
 
 
 class Severity(str, Enum):
-    """Ordered severity. ``CRITICAL`` and ``HIGH`` block a PR by default."""
+    """Ordered severity. ``CRITICAL`` and ``HIGH`` block a PR by default.
+
+    All four comparisons are defined deliberately. ``Severity`` subclasses ``str``, so any
+    operator left undefined falls through to alphabetical string comparison -- under which
+    ``INFO > CRITICAL`` is true and ``max()`` over a model's findings returns ``HIGH`` for a
+    model carrying two ``CRITICAL``s. That answer is wrong, plausible, and silent: exactly
+    the failure mode this project exists to surface, and it was being written into DataHub
+    as the model's recorded risk.
+    """
 
     CRITICAL = "CRITICAL"
     HIGH = "HIGH"
@@ -46,6 +54,16 @@ class Severity(str, Enum):
         if not isinstance(other, Severity):
             return NotImplemented
         return self.rank <= other.rank
+
+    def __gt__(self, other: object) -> bool:  # type: ignore[override]
+        if not isinstance(other, Severity):
+            return NotImplemented
+        return self.rank > other.rank
+
+    def __ge__(self, other: object) -> bool:  # type: ignore[override]
+        if not isinstance(other, Severity):
+            return NotImplemented
+        return self.rank >= other.rank
 
 
 _SEVERITY_RANK: dict[Severity, int] = {

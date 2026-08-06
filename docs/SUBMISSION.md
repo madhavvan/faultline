@@ -85,8 +85,12 @@ paths quote the actual expressions.
 **The agent reads DataHub through its own MCP server.** A real MCP session against
 `mcp-server-datahub`, converted for the Anthropic tool runner. The agent explains consequence
 and may move a severity by **at most one step with a recorded reason** — it cannot create a
-finding. On the demo it correctly de-escalated the PII finding to MEDIUM ("only the email
-domain survives the transform") and noticed that three findings share one upstream path.
+finding. `examples/triage-report.md` is a committed run against a live instance: it moved PII
+down to MEDIUM ("a coarse domain fragment rather than an identifier") and train/serve skew up
+to CRITICAL ("a 4x window mismatch on one of only ~5 inputs corrupts every production
+prediction"), and it found from the catalogue that the leaked feature has no column in the
+online store at all. The run cost $0.44 — 273K input tokens, 241K served from prompt cache,
+against $1.47 for the same run uncached.
 
 ## Challenges
 
@@ -116,8 +120,9 @@ the ones that are not there.
   `demo/verify_live.py`, which emits into DataHub, reads the graph back through the ordinary
   client, scans it, writes back, and then **reads the tags, properties and incidents back
   out** to confirm they landed.
-- A **sixth skill** for DataHub's skills registry, which today ships setup / search / lineage
-  / enrich / quality and nothing that crosses into ML entities.
+- A **new skill** for DataHub's skills registry, written in its format. The registry's own
+  `datahub-lineage` skill enumerates three entity types — dataset, dashboard, chart — and
+  nothing in the registry crosses into ML entities.
 
 ## What we learned
 

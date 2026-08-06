@@ -1,15 +1,32 @@
 ---
 name: datahub-ml-lineage
-description: Trace and reason about end-to-end ML lineage in DataHub — from training data through features to models and deployments. Use when asked which data feeds a model, what breaks if a column changes, whether a feature leaks its label, or whether offline and online feature definitions agree.
+description: |
+  Use this skill when a lineage question crosses from datasets into ML entities — mlFeature, mlFeatureTable, mlModel, mlModelDeployment. Triggers on: "what data feeds this model", "which columns train X", "does this feature leak the label", "do the offline and online definitions of this feature agree", "what models break if I change this column", "is this model trained on PII", or any request that ends at a model, a feature or an endpoint rather than at a table. For lineage that stays between datasets, dashboards and charts, use `/datahub-lineage`. For ad-hoc catalog questions, use `/datahub-search`.
+user-invocable: true
+min-cli-version: 1.4.0
+allowed-tools: Bash(datahub *)
 ---
 
 # DataHub ML Lineage
 
-DataHub's shipped skills cover search, table lineage, enrichment and quality. None of them
-cross into ML entities, so an agent asked "what data actually feeds this model?" tends to
-stop at the feature table and guess the rest.
+`/datahub-lineage` traverses datasets, dashboards and charts. It stops at the warehouse
+boundary, so an agent asked "what data actually feeds this model?" tends to stop at the
+feature table and guess the rest.
 
-This skill teaches the traversal, and — more importantly — the two places it goes wrong.
+This skill teaches the traversal past that boundary, and — more importantly — the two places
+it goes wrong.
+
+## Not This Skill
+
+- Lineage between datasets, dashboards and charts, with no ML entity involved →
+  `/datahub-lineage`.
+- "Who owns X", "what tables contain PII", one-off catalog lookups → `/datahub-search`.
+- Writing owners, terms or documentation onto entities → `/datahub-enrich`.
+- Assertion and data-quality state → `/datahub-quality`.
+
+The boundary that matters: those skills answer questions *about the warehouse*. This one
+answers questions whose subject is a **model, a feature or an endpoint**, where the warehouse
+is only the first half of the path.
 
 ## The chain
 

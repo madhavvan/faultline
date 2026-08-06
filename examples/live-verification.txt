@@ -3,20 +3,20 @@ Faultline live verification against http://localhost:8080
 [1] Emit the dbt-derived demo graph into DataHub
 ------------------------------------------------------------------------
       42 aspects across 23 entities (2 glossary terms)
-  PASS  emitted without failures — 0 failed
+  PASS  emitted without failures â€” 0 failed
       search indexed 10/10 datasets
 
 [2] Read the graph back out of DataHub
 ------------------------------------------------------------------------
       {'entities': 23, 'column_edges': 43, 'dataset_edges': 12, 'DATASET': 10, 'ML_MODEL': 1, 'ML_FEATURE': 9, 'ML_FEATURE_TABLE': 2, 'ML_MODEL_DEPLOYMENT': 1, 'synthesised_ml_edges': 24}
-  PASS  datasets round-tripped — 10
+  PASS  datasets round-tripped â€” 10
   PASS  ML models round-tripped
   PASS  ML features round-tripped
-  PASS  column-level lineage round-tripped — 43 edges
+  PASS  column-level lineage round-tripped â€” 43 edges
   PASS  model carries its deployment
   PASS  label column survived the round trip
-  PASS  Label glossary term is on a column — 1 column(s)
-  PASS  PII glossary terms round-tripped — 8 column(s)
+  PASS  Label glossary term is on a column â€” 1 column(s)
+  PASS  PII glossary terms round-tripped â€” 8 column(s)
       captured live graph -> examples\live-datahub-graph.json
 
 [3] Scan the graph as loaded from DataHub
@@ -25,28 +25,28 @@ Faultline live verification against http://localhost:8080
       CRITICAL  Feature `customer_features_offline.segment_churn_rate` derives from label `war
       HIGH      PII column reaches `churn_propensity_v7`
       HIGH      Offline and online `avg_order_value_30d` are computed differently
-  PASS  exactly four findings — 4
+  PASS  exactly four findings â€” 4
   PASS  all four fault classes found
   PASS  every finding is substantiated
-  PASS  live findings match the offline run — live=4 offline=4
+  PASS  live findings match the offline run â€” live=4 offline=4
 
 [4] Write the findings back into DataHub
 ------------------------------------------------------------------------
-      plan: 17 change(s) — {'structured-property': 1, 'tag': 10, 'incident': 4, 'link': 1, 'audit-run': 1}
+      plan: 17 change(s) â€” {'structured-property': 1, 'tag': 10, 'incident': 4, 'link': 1, 'audit-run': 1}
       applied=17 failed=0
   PASS  write-back applied cleanly
       waiting 15s for indexing ...
 
 [5] Read the contribution back out of DataHub
 ------------------------------------------------------------------------
-  PASS  Faultline tags are on the model in DataHub — Faultline_SilentSemanticChange, Faultline_TargetLeakage, Faultline_RestrictedData, Faultline_TrainServeSkew
-  PASS  structured properties are on the model — io.faultline.finding_count, io.faultline.findings, io.faultline.last_scanned, io.faultline.proof_summary, io.faultline.risk
-  PASS  risk property records the worst severity — ['HIGH']
+  PASS  Faultline tags are on the model in DataHub â€” Faultline_SilentSemanticChange, Faultline_TargetLeakage, Faultline_RestrictedData, Faultline_TrainServeSkew
+  PASS  structured properties are on the model â€” io.faultline.finding_count, io.faultline.findings, io.faultline.last_scanned, io.faultline.proof_summary, io.faultline.risk
+  PASS  risk property records the worst severity â€” ['CRITICAL']
   PASS  an incident was opened for a blocking finding
   PASS  the incident carries the proof path
-  PASS  the incident targets an entity DataHub accepts — urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD)
-  PASS  the incident names the affected model — `warehouse.main_raw.raw_orders.amount` changed (currency change) beneath `churn_propensity_v7` — affects churn_propensity_v7
+  PASS  the incident targets an entity DataHub accepts â€” urn:li:dataset:(urn:li:dataPlatform:duckdb,warehouse.main_raw.raw_orders,PROD)
+  PASS  the incident names the affected model â€” `warehouse.main_raw.raw_orders.amount` changed (currency change) beneath `churn_propensity_v7` â€” affects churn_propensity_v7
   PASS  report link attached
 
 ========================================================================
-ALL CHECKS PASSED — Faultline works end to end against a live DataHub.
+ALL CHECKS PASSED â€” Faultline works end to end against a live DataHub.

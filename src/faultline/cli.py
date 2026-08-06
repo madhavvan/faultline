@@ -13,6 +13,7 @@ import sys
 from pathlib import Path
 
 import typer
+from pydantic import ValidationError
 from rich.table import Table
 
 from . import __version__
@@ -295,10 +296,10 @@ def triage(
     config = FaultlineConfig.load(config_path)
 
     if demo_pipeline:
-        from . import demo_world
-
-        baseline = SemanticBaseline.capture(MetadataGraph(demo_world.clean_world()))
-        graph = MetadataGraph(demo_world.faulty_world())
+        # The same graph `faultline demo` scans -- the dbt-derived fixture, not the
+        # synthetic fallback. Triaging a different pipeline than the one the demo reports
+        # would give the two artefacts different fingerprints for the same four faults.
+        graph, baseline = _demo_graph()
     else:
         graph = _load_graph(config, fixture)
         baseline = _load_baseline(baseline_path)
@@ -333,9 +334,12 @@ def triage(
         console.print(f"[bold]Agent summary[/]\n{report.summary}")
 
     console.print()
+    cached = (
+        f" ({report.cache_read_tokens:,} cached)" if report.cache_read_tokens else ""
+    )
     console.print(
         f"[dim]{report.assessed}/{report.total} assessed · "
-        f"{report.input_tokens:,} in / {report.output_tokens:,} out · "
+        f"{report.total_input_tokens:,} in{cached} / {report.output_tokens:,} out · "
         f"~${report.estimated_cost_usd:.3f}[/]"
     )
 
@@ -548,12 +552,33 @@ def _load_graph(config: FaultlineConfig, fixture: Path | None) -> MetadataGraph:
 
 
 def _load_baseline(path: Path | None) -> SemanticBaseline | None:
+    """Load a semantic baseline, degrading to "no baseline" rather than crashing.
+
+    The CI gate restores the baseline with ``git show origin/main:... > baseline.json``,
+    which creates an empty file when the baseline does not exist on main yet. Letting an
+    empty or malformed file raise here would exit 1 -- the code the workflow reads as *"a
+    structural risk was proved"* -- and announce a production defect on a scan that never
+    produced one. Missing change detection is the honest outcome, so say so and continue.
+    """
     if not path:
         return None
     if not path.exists():
         console.print(f"[yellow]baseline {path} not found; skipping change detection[/]")
         return None
-    return SemanticBaseline.model_validate_json(path.read_text(encoding="utf-8"))
+
+    raw = path.read_text(encoding="utf-8").strip()
+    if not raw:
+        console.print(f"[yellow]baseline {path} is empty; skipping change detection[/]")
+        return None
+
+    try:
+        return SemanticBaseline.model_validate_json(raw)
+    except ValidationError as exc:
+        console.print(
+            f"[yellow]baseline {path} is not a Faultline baseline; "
+            f"skipping change detection[/]\n[dim]{exc.error_count()} validation error(s)[/]"
+        )
+        return None
 
 
 if __name__ == "__main__":  # pragma: no cover

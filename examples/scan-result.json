@@ -76,7 +76,7 @@
       },
       "remediation": "Confirm whether `churn_propensity_v7` was retrained after this change. If not, its training distribution no longer matches its inputs -- retrain, or revert the upstream change.",
       "narrative": null,
-      "detected_at": "2026-07-31T01:04:39.597567+00:00"
+      "detected_at": "2026-08-06T17:08:39.934322+00:00"
     },
     {
       "kind": "TARGET_LEAKAGE",
@@ -132,7 +132,7 @@
       },
       "remediation": "Break the dependency: recompute `customer_features_offline.segment_churn_rate` from inputs that exclude `warehouse.main_marts.customer_360.churned`, or drop the feature. Re-evaluate the model afterwards -- the current metrics are not a measurement of predictive skill.",
       "narrative": null,
-      "detected_at": "2026-07-31T01:04:39.598575+00:00"
+      "detected_at": "2026-08-06T17:08:39.936427+00:00"
     },
     {
       "kind": "COMPLIANCE_PROPAGATION",
@@ -203,7 +203,7 @@
       },
       "remediation": "Either propagate PII onto the intermediate features and `churn_propensity_v7` so the restriction travels with the data, or remove the column from the model's lineage. Faultline can apply the propagation for you with `--write-back`.",
       "narrative": null,
-      "detected_at": "2026-07-31T01:04:39.597567+00:00"
+      "detected_at": "2026-08-06T17:08:39.929762+00:00"
     },
     {
       "kind": "TRAIN_SERVE_SKEW",
@@ -296,7 +296,7 @@
       },
       "remediation": "Reconcile the two definitions of `avg_order_value_30d` at the fork point, then backfill or retrain. Longer term, compute the feature once and materialise both stores from that single definition so the paths cannot drift again.",
       "narrative": null,
-      "detected_at": "2026-07-31T01:04:39.598575+00:00"
+      "detected_at": "2026-08-06T17:08:39.936427+00:00"
     }
   ],
   "scanned_models": [
@@ -319,8 +319,8 @@
     "target-leakage",
     "train-serve-skew"
   ],
-  "started_at": "2026-07-31T01:04:39.596059+00:00",
-  "finished_at": "2026-07-31T01:04:39.599986+00:00",
+  "started_at": "2026-08-06T17:08:39.928646+00:00",
+  "finished_at": "2026-08-06T17:08:39.940907+00:00",
   "graph_source": "replay:demo-graph.json",
   "stats": {
     "graph": {

@@ -68,6 +68,7 @@ def render_report(result: ScanResult) -> str:
         f"- **Findings:** {len(findings)}",
         "",
     ]
+    lines.extend(_triage_block(result))
     if findings:
         lines.append(_summary_table(findings))
         lines.append("")
@@ -82,6 +83,55 @@ def render_report(result: ScanResult) -> str:
 
 
 # --------------------------------------------------------------------------------------
+
+
+def _triage_block(result: ScanResult) -> list[str]:
+    """State whether an agent touched this report, on what evidence, and at what cost.
+
+    A report that silently mixes deterministic proof with model-written prose is not
+    reviewable. If the agent ran, the reader is told which model wrote the narratives,
+    whether it could actually see DataHub, and that it cannot have created a finding.
+    """
+    triage = result.stats.get("triage")
+    if not isinstance(triage, dict):
+        return []
+
+    lines = ["## Triage", ""]
+    lines.append(
+        f"- **Agent:** `{triage.get('model') or 'unknown'}` · "
+        f"assessed {triage.get('assessed', 0)}/{triage.get('total', 0)} finding(s)"
+    )
+
+    error = triage.get("mcp_error")
+    if error:
+        lines.append(
+            f"- **DataHub context:** unavailable ({error}) — triaged on the proofs alone"
+        )
+    else:
+        lines.append(
+            f"- **DataHub context:** read live through the official `mcp-server-datahub` "
+            f"MCP server ({triage.get('mcp_tools', 0)} tools)"
+        )
+
+    cost = triage.get("estimated_cost_usd")
+    if cost is not None:
+        read = triage.get("cache_read_tokens", 0)
+        total_in = triage.get("total_input_tokens") or triage.get("input_tokens", 0)
+        cached = f" ({read:,} served from cache)" if read else ""
+        lines.append(
+            f"- **Cost:** {total_in:,} input{cached} / "
+            f"{triage.get('output_tokens', 0):,} output ≈ ${cost:.2f}"
+        )
+
+    lines.append("")
+    lines.append(
+        "> Quoted lines under each finding are the agent's assessment of consequence. Every "
+        "structural claim above them comes from a detector, and the agent cannot create a "
+        "finding or move a severity by more than one step — where it did, the finding's "
+        "evidence records `severity_before_triage` and the reason."
+    )
+    lines.append("")
+    return lines
 
 
 def _headline(findings: list[Finding], blocking: list[Finding]) -> str:

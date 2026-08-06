@@ -48,7 +48,7 @@ churn_propensity_v7
     "tags": [],
     "terms": []
   },
-  "baseline_captured_at": "2026-07-27T17:48:58.673911+00:00",
+  "baseline_captured_at": "2026-07-27T21:27:52.636323+00:00",
   "before": {
     "description": "Order gross total in USD.",
     "native_type": "DECIMAL(18,2)",

@@ -159,9 +159,22 @@ finding**, and it may move a severity by **at most one step**, with a stated rea
 in the finding's evidence. Structural claims come from deterministic traversal; the model
 supplies judgement about consequence, which is the part it is good at.
 
-On the demo pipeline it correctly de-escalated the PII finding to MEDIUM — *"only the email
-domain survives the transform"* — and noticed that three of the four findings trace through
-one shared upstream path. That run cost about $0.21 at Claude Opus 5 rates.
+[`examples/triage-report.md`](examples/triage-report.md) is a committed run against a live
+DataHub, not a description of one. In it the agent moved severity in both directions and
+said why each time:
+
+- **PII, HIGH → MEDIUM** — *"the propagated value is a coarse domain fragment rather than an
+  identifier"*, and the warehouse columns on the path already carry the PII term.
+- **Train/serve skew, HIGH → CRITICAL** — *"a 4x window mismatch on one of only ~5 inputs
+  corrupts every production prediction, not a subset."*
+
+It also read context no detector supplies: that `customer_features_online` has no
+`segment_churn_rate` column at all, so the leaked feature cannot even be served — and that
+`raw_orders` already carries two open incidents, which Faultline itself had written back.
+
+That run cost **$0.44** at Claude Opus 5 list pricing — 273K input tokens, 241K of them
+served from cache. A tool loop resends the whole conversation every turn, so caching the
+prefix is most of the bill: without it the same run costs $1.47.
 
 If the MCP server is unreachable, the agent runs on the proofs alone and says so, rather than
 speculating to fill the gap.
@@ -170,9 +183,12 @@ speculating to fill the gap.
 
 ## Contributing back to DataHub
 
-DataHub's skills registry ships five skills — setup, search, lineage, enrich, quality — and
-none of them cross into ML entities. [`skills/datahub-ml-lineage/`](skills/datahub-ml-lineage/)
-is a sixth, written for upstream contribution: it teaches an agent the
+DataHub's skills registry covers the catalogue — setup, search, lineage, enrich, quality —
+and connector development. Its `datahub-lineage` skill enumerates exactly three entity
+types: dataset, dashboard, chart. Nothing in the registry crosses into ML entities.
+
+[`skills/datahub-ml-lineage/`](skills/datahub-ml-lineage/) is written for upstream
+contribution in their format: it teaches an agent the
 dataset → feature → model → deployment traversal, and the two traps that make naive versions
 wrong (the column/dataset granularity break, and comparing feature paths by node identity).
 

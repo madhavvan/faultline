@@ -14,5 +14,5 @@ What the model is actually served:
 
 The aggregate means agree to within 1.4% while 51% of served rows
 are more than 10% wrong. That gap is the whole argument: this defect is invisible
-in the data distribution and unambiguous in the lineage graph — one path averages
+in the data distribution and unambiguous in the lineage graph â€” one path averages
 over 30 days, the other over 7.

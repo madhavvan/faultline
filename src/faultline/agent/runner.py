@@ -3,10 +3,11 @@
 Two tool families are handed to one loop:
 
 * Faultline's own tools, which expose what the detectors proved.
-* Every tool the **DataHub MCP server** exposes -- ``search``, ``get_entities``,
-  ``get_lineage``, ``get_lineage_paths_between``, ``get_dataset_queries`` -- converted for
-  the Anthropic tool runner. That is a real MCP session against the official server, not a
-  reimplementation of it.
+* Every tool the **DataHub MCP server** exposes -- on an open-source instance that is
+  ``search``, ``get_entities``, ``get_lineage``, ``get_lineage_paths_between``,
+  ``get_dataset_queries`` and ``list_schema_fields`` -- converted for the Anthropic tool
+  runner. Whatever the server advertises is what the agent gets: that is a real MCP session
+  against the official server, not a reimplementation of it.
 
 If the MCP server cannot be reached, the agent still runs on the Faultline tools alone and
 says so. Degrading is better than failing, and pretending the context was available would be
@@ -32,6 +33,16 @@ logger = logging.getLogger(__name__)
 FALLBACK_BETA = "server-side-fallback-2026-07-01"
 
 
+#: Claude Opus 5 list pricing, USD per million tokens. Cache writes bill at 1.25x input and
+#: cache reads at 0.1x, which is the whole reason the loop below asks for caching at all.
+PRICE_PER_MTOK = {
+    "input": 5.0,
+    "output": 25.0,
+    "cache_write": 6.25,
+    "cache_read": 0.5,
+}
+
+
 @dataclass
 class TriageReport:
     """What the agent did, and what it cost."""
@@ -44,12 +55,30 @@ class TriageReport:
     refused: bool = False
     input_tokens: int = 0
     output_tokens: int = 0
+    cache_write_tokens: int = 0
+    cache_read_tokens: int = 0
     model: str = ""
 
     @property
     def estimated_cost_usd(self) -> float:
-        """Claude Opus 5 list pricing: $5 / MTok in, $25 / MTok out."""
-        return (self.input_tokens * 5.0 + self.output_tokens * 25.0) / 1_000_000
+        """What the run actually cost, cached tokens priced as cached.
+
+        ``usage.input_tokens`` counts only the tokens billed at full rate -- anything served
+        from cache is reported separately. Summing the two would over-report; ignoring the
+        cache fields would under-report. Both are wrong in a way nobody would notice, so
+        each bucket is priced at its own rate.
+        """
+        return (
+            self.input_tokens * PRICE_PER_MTOK["input"]
+            + self.output_tokens * PRICE_PER_MTOK["output"]
+            + self.cache_write_tokens * PRICE_PER_MTOK["cache_write"]
+            + self.cache_read_tokens * PRICE_PER_MTOK["cache_read"]
+        ) / 1_000_000
+
+    @property
+    def total_input_tokens(self) -> int:
+        """Every input token the run read, however it was billed."""
+        return self.input_tokens + self.cache_write_tokens + self.cache_read_tokens
 
 
 class TriageAgent:
@@ -161,6 +190,12 @@ class TriageAgent:
             "thinking": {"type": "adaptive"},
             # Enough iterations to read and assess every finding without running away.
             "max_iterations": max(12, len(session.result.findings) * 6),
+            # A tool loop resends the entire conversation on every iteration, so the same
+            # system prompt, tool schemas and accumulated DataHub context are re-billed at
+            # full rate each turn -- which is most of what a triage run costs. Top-level
+            # caching marks the last cacheable block, so each turn writes only its own
+            # suffix and reads the whole prefix at a tenth of the price.
+            "cache_control": {"type": "ephemeral"},
             "betas": [FALLBACK_BETA],
             "fallbacks": "default",
         }
@@ -168,9 +203,10 @@ class TriageAgent:
         try:
             runner = client.beta.messages.tool_runner(**kwargs)
         except TypeError:
-            # An SDK without the fallbacks parameter: drop it rather than fail the scan.
-            kwargs.pop("betas", None)
-            kwargs.pop("fallbacks", None)
+            # An older SDK without one of the optional parameters: drop them rather than
+            # fail the scan. Caching and fallbacks are both optimisations; the triage is not.
+            for optional in ("betas", "fallbacks", "cache_control"):
+                kwargs.pop(optional, None)
             runner = client.beta.messages.tool_runner(**kwargs)
 
         final = None
@@ -180,6 +216,10 @@ class TriageAgent:
             if usage:
                 report.input_tokens += getattr(usage, "input_tokens", 0) or 0
                 report.output_tokens += getattr(usage, "output_tokens", 0) or 0
+                report.cache_write_tokens += (
+                    getattr(usage, "cache_creation_input_tokens", 0) or 0
+                )
+                report.cache_read_tokens += getattr(usage, "cache_read_input_tokens", 0) or 0
 
         if final is None:
             return
@@ -219,10 +259,14 @@ class TriageAgent:
             "assessed": report.assessed,
             "total": report.total,
             "mcp_tools": len(report.mcp_tools),
+            "mcp_tool_names": list(report.mcp_tools),
             "mcp_error": report.mcp_error,
             "model": report.model,
             "input_tokens": report.input_tokens,
             "output_tokens": report.output_tokens,
+            "cache_write_tokens": report.cache_write_tokens,
+            "cache_read_tokens": report.cache_read_tokens,
+            "total_input_tokens": report.total_input_tokens,
             "estimated_cost_usd": round(report.estimated_cost_usd, 4),
         }
 

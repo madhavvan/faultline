@@ -1,5 +1,5 @@
 {
-  "captured_at": "2026-07-27T21:36:09.384425+00:00",
+  "captured_at": "2026-08-06T17:10:36.352665+00:00",
   "column_edges": [
     {
       "confidence": 1.0,
@@ -1598,7 +1598,7 @@
           "e1662b7ddfe6a345:TRAIN_SERVE_SKEW:HIGH"
         ],
         "urn:li:structuredProperty:io.faultline.last_scanned": [
-          "2026-07-27T21:35:25.552305+00:00"
+          "2026-08-06T17:07:12.228851+00:00"
         ],
         "urn:li:structuredProperty:io.faultline.proof_summary": [
           "`warehouse.main_raw.raw_orders.amount` changed (currency change) beneath `churn_propensity_v7` \u2014 5 hop(s)",
