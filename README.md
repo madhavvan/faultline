@@ -113,6 +113,10 @@ customer_features_offline.segment_churn_rate
 churn_propensity_v7                   ← 0.94 AUC, and it was never real
 ```
 
+The leakage finding proves the first three hops — label to feature — and reports itself as
+`(3 hops)`. The fourth edge is the model input that makes it matter, and the compliance
+finding renders it in its own proof.
+
 A reviewer can read that without trusting the tool. If a detector ever emits a finding whose
 proof does not hold together, the engine drops it and says so — Faultline will not report a
 defect it cannot substantiate.

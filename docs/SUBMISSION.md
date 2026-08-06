@@ -60,6 +60,9 @@ customer_features_offline.segment_churn_rate
 churn_propensity_v7                            ← 0.94 AUC, and it was never real
 ```
 
+The finding itself proves the first three hops, label to feature, and reports as `(3 hops)`;
+the fourth edge is the model input that makes it matter.
+
 It then **writes the finding back into DataHub** — tags, structured properties, an incident
 carrying the proof, an institutional-memory link, and a `DataProcessInstance` recording the
 scan — so the next person or agent inherits the conclusion instead of rediscovering it.
