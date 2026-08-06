@@ -56,8 +56,10 @@ warehouse.main_marts.customer_360.avg_order_value_30d
 
 ## Why a drift monitor cannot find this
 
-The demo's train/serve skew is a 30-day window offline against a 7-day window online. Run
-`python demo/measure_skew.py` against the built warehouse and it reports:
+The demo's train/serve skew is a 30-day window offline against a 7-day window online. Measured
+against the real DuckDB tables — the run is committed at
+[`examples/skew-measured.txt`](examples/skew-measured.txt), so this is checkable without
+building anything:
 
 | What a distribution monitor compares | |
 |---|---|
@@ -72,6 +74,15 @@ The demo's train/serve skew is a 30-day window offline against a 7-day window on
 The aggregates agree to within a couple of percent while half the served rows are materially
 wrong. That gap is the entire argument. This defect is invisible in the data and unambiguous
 in the graph.
+
+To re-measure it yourself rather than take the committed run on trust, build the warehouse
+first — the DuckDB file is a build artefact and is not in the repository:
+
+```bash
+pip install -e ".[demo]"      # dbt + duckdb
+make warehouse                # builds both worlds, ~30s
+python demo/measure_skew.py
+```
 
 ---
 
@@ -146,6 +157,8 @@ full plan before anything is sent; see `examples/writeback-plan.txt`.
 ## The agent
 
 ```bash
+pip install -e ".[agent]"     # anthropic + mcp
+export ANTHROPIC_API_KEY=...
 faultline triage --demo
 ```
 

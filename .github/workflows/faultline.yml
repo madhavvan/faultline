@@ -19,6 +19,30 @@ permissions:
   pull-requests: write
 
 jobs:
+  # Whether there is a DataHub to scan at all. A job cannot read `secrets` in its
+  # own `if:`, so the answer is computed once here and consumed as an output.
+  # Without this, structural-risk starts a runner, installs Python, and exits 0
+  # having scanned nothing — and a second job that has no work to do is still a
+  # second job that can sit unscheduled and fail the run. On 2026-08-06 it sat
+  # queued for fifteen minutes without starting a step and was cancelled, which
+  # marked a run red whose `verify` job had passed every check.
+  configured:
+    runs-on: ubuntu-latest
+    outputs:
+      live: ${{ steps.probe.outputs.live }}
+    steps:
+      - id: probe
+        env:
+          DATAHUB_GMS_URL: ${{ secrets.DATAHUB_GMS_URL }}
+        run: |
+          if [ -n "$DATAHUB_GMS_URL" ]; then
+            echo "live=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "No DATAHUB_GMS_URL secret — the live gate has no graph to scan."
+            echo "Set DATAHUB_GMS_URL and DATAHUB_GMS_TOKEN to enable it."
+            echo "live=no" >> "$GITHUB_OUTPUT"
+          fi
+
   verify:
     runs-on: ubuntu-latest
     steps:
@@ -44,6 +68,8 @@ jobs:
         run: faultline demo
 
   structural-risk:
+    needs: configured
+    if: needs.configured.outputs.live == 'yes'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

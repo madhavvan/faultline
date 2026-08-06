@@ -313,8 +313,48 @@ def triage(
         f"[dim]triaging {len(result.findings)} finding(s) with "
         f"{config.agent.model} (effort={config.agent.effort})[/]"
     )
-    with console.status("agent working"):
-        report = TriageAgent(config).run(result, graph)
+
+    # The agent is the one command with prerequisites the base install does not
+    # carry, and it is advertised in the README, so it is the command a reviewer
+    # is most likely to run without them. Everything else in this CLI says what
+    # is wrong and exits; this path used to raise a traceback over a missing
+    # optional dependency, which reads as a broken tool rather than an
+    # unconfigured one.
+    try:
+        with console.status("agent working"):
+            report = TriageAgent(config).run(result, graph)
+    except ImportError as exc:
+        # The brackets are escaped for rich, which would otherwise read
+        # "[agent]" as a style tag and print the remediation without the extra
+        # it exists to name -- telling the reader to run the command that just
+        # failed them.
+        console.print(
+            "[bold red]the agent extra is not installed[/]\n"
+            r'[dim]pip install -e ".\[agent]"[/]' + "\n"
+            f"[dim]{exc}[/]"
+        )
+        raise typer.Exit(code=2) from exc
+    except Exception as exc:
+        # The agent runs inside an asyncio TaskGroup, so whatever actually went
+        # wrong arrives wrapped in an ExceptionGroup whose own message is
+        # "unhandled errors in a TaskGroup (1 sub-exception)" -- true, and no
+        # help to anyone. Unwrap to the cause the reader can act on. Duck-typed
+        # rather than isinstance'd because ExceptionGroup is 3.11+ and this
+        # package supports 3.10.
+        cause: BaseException = exc
+        for _ in range(4):
+            inner = getattr(cause, "exceptions", None)
+            if not inner:
+                break
+            cause = inner[0]
+
+        console.print(
+            f"[bold red]the triage agent could not run[/]: {type(cause).__name__}: {cause}\n"
+            "[dim]This needs ANTHROPIC_API_KEY set, and the DataHub MCP server on PATH "
+            "for catalogue context. The scan itself is unaffected — run `faultline demo` "
+            "to see the findings without the agent.[/]"
+        )
+        raise typer.Exit(code=2) from exc
 
     if report.mcp_error:
         console.print(
